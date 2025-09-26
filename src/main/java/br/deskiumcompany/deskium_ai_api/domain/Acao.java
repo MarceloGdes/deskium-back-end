@@ -1,0 +1,59 @@
+package br.deskiumcompany.deskium_ai_api.domain;
+
+import br.deskiumcompany.deskium_ai_api.domain.enums.OrigemAcao;
+import jakarta.persistence.*;
+import lombok.AllArgsConstructor;
+import lombok.Data;
+import lombok.NoArgsConstructor;
+
+import java.time.LocalDate;
+import java.time.LocalTime;
+import java.util.List;
+
+@Entity
+@Data
+@AllArgsConstructor
+@NoArgsConstructor
+public class Acao extends EntidadeBase {
+
+    @ManyToOne(optional = false)
+    private Ticket ticket;
+
+    @Column(nullable = false, unique = true)
+    private int numAcao;
+
+    @Column(nullable = false)
+    private boolean acaoInterna;
+
+    private LocalDate dataAtendimento;
+    private LocalTime inicioAtendimento;
+    private LocalTime fimAtendimento;
+
+    @ManyToOne(optional = false)
+    private Usuario usuarioAutor;
+
+    // Guarda o Delta Text do Quill (editor), com todos seus atributos,
+    // para ser retornado ao front e o HTML ser montado.
+    // "jsonb" Guarda JSON de forma eficiente e permite consultas estruturadas, se necessário.
+    // Sem limite de tamanho
+    @Column(columnDefinition = "jsonb")
+    private String deltaJson;
+
+    //Caso seja um corpo de ação originada de e-mail, para não perder a formatação, irei armazenar o própio HTML
+    //Text -> sem limite de caracteres
+    @Column(columnDefinition = "TEXT")
+    private String corpoEmailHtml;
+
+    // Texto puro, para buscas aprimoradas
+    // Limite de 10k de caracteres.
+    //TODO: Implementar validação no front e antes de salvar no banco
+    @Column(length = 10000)
+    private String textoPuro;
+
+    @Enumerated(EnumType.STRING)
+    @Column(nullable = false)
+    private OrigemAcao origemAcao;
+
+    @OneToMany(mappedBy = "acao")
+    private List<Anexo> anexos;
+}
