@@ -32,17 +32,10 @@ public class Acao extends EntidadeBase {
     @ManyToOne(optional = false)
     private Usuario usuarioAutor;
 
-    // Guarda o Delta Text do Quill (editor), com todos seus atributos,
-    // para ser retornado ao front e o HTML ser montado.
-    // "jsonb" Guarda JSON de forma eficiente e permite consultas estruturadas, se necessário.
-    // Sem limite de tamanho
-    @Column(columnDefinition = "jsonb")
-    private String deltaJson;
-
     //Caso seja um corpo de ação originada de e-mail, para não perder a formatação, irei armazenar o própio HTML
     //Text -> sem limite de caracteres
     @Column(columnDefinition = "TEXT")
-    private String corpoEmailHtml;
+    private String html;
 
     // Texto puro, para buscas aprimoradas
     // Limite de 10k de caracteres.
