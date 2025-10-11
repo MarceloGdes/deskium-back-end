@@ -22,10 +22,19 @@ public class Expediente extends EntidadeBase {
     @Enumerated(EnumType.STRING)
     @Column(nullable = false, length = 50)
     private DiaSemana diaSemana;
+
     @Column(nullable = false)
     private boolean expediente;
+
+    @Column(nullable = false)
     private LocalTime inicioManha;
+
+    @Column(nullable = false)
     private LocalTime fimManha;
+
+    @Column(nullable = false)
     private LocalTime inicioTarde;
+
+    @Column(nullable = false)
     private LocalTime fimTarde;
 }

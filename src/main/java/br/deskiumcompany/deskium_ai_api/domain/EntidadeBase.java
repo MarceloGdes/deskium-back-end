@@ -1,10 +1,12 @@
 package br.deskiumcompany.deskium_ai_api.domain;
 
 import jakarta.persistence.*;
+import lombok.Data;
 import org.springframework.data.annotation.CreatedDate;
 
 import java.time.LocalDateTime;
 
+@Data
 @MappedSuperclass //Todas as entidades que estendem a classe herdarão corretamente os atributos, com as anotações
 public abstract class EntidadeBase {
 
@@ -12,8 +14,7 @@ public abstract class EntidadeBase {
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
 
-    @CreatedDate
     @Column(nullable = false)
-    private LocalDateTime criadoEm;
+    private LocalDateTime criadoEm = LocalDateTime.now();
 }
 

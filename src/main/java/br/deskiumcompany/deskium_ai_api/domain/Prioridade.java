@@ -16,10 +16,13 @@ public class Prioridade extends EntidadeBase {
 
     @Column(nullable = false, length = 50)
     private String descricao;
+
     @Column(nullable = false)
     private int decressimoPrazoPrimeiraResposta;
+
     @Column(nullable = false)
     private int decressimoPrazoResolucao;
+
     @Column(nullable = false)
     private String corHex;
 }

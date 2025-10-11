@@ -1,5 +1,6 @@
 package br.deskiumcompany.deskium_ai_api.domain;
 
+import br.deskiumcompany.deskium_ai_api.dto.solicitante.SolicitanteInsertDTO;
 import jakarta.persistence.*;
 import lombok.AllArgsConstructor;
 import lombok.Data;
@@ -18,10 +19,10 @@ public class Solicitante extends EntidadeBase{
     @Column(nullable = false, length = 50)
     private String setor;
 
-    @Column(length = 14)
+    @Column(length = 11)
     private String celular;
 
-    @Column(nullable = false, length = 14)
+    @Column(nullable = false, length = 10)
     private String telefone;
 
     private String observacoes;
@@ -29,9 +30,27 @@ public class Solicitante extends EntidadeBase{
     @ManyToOne(optional = false)
     private Empresa empresa;
 
-    @OneToOne(optional = false)
+    @OneToOne(optional = false, cascade = CascadeType.ALL)
     private Usuario usuario;
 
     @OneToMany(mappedBy = "solicitante")
     private List<Ticket> tickets;
+
+    public Solicitante(SolicitanteInsertDTO dto) {
+        this.cargo = dto.getCargo();
+        this.setor = dto.getSetor();
+        this.celular = dto.getCelular();
+        this.telefone = dto.getTelefone();
+        this.observacoes = dto.getObservacoes();
+
+        Empresa empresa = new Empresa();
+        empresa.setId(dto.getEmpresaId());
+        this.empresa = empresa;
+
+        Usuario usuario = new Usuario();
+        usuario.setNomeCompleto(dto.getNomeCompleto());
+        usuario.setEmail(dto.getEmail());
+        usuario.setSenha(dto.getSenha());
+        this.usuario = usuario;
+    }
 }

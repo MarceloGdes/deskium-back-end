@@ -13,7 +13,8 @@ import java.util.List;
 @AllArgsConstructor
 @NoArgsConstructor
 public class Suporte extends EntidadeBase{
-    @Enumerated(EnumType.STRING) //Armazena o texto do ENUM no banco.
+    @Enumerated(EnumType.STRING)
+    @Column(nullable = false)//Armazena o texto do ENUM no banco.
     private PerfilSuporte pefil;
 
     @OneToMany(mappedBy = "suporte")

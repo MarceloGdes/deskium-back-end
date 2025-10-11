@@ -16,8 +16,10 @@ import java.util.List;
 public class Motivo extends EntidadeBase {
     @Column(nullable = false, length = 100)
     private String descricao;
+
     @Column(nullable = false)
     private int prazoPrimeiraResposta;
+
     @Column(nullable = false)
     private int prazoResolucao;
 }

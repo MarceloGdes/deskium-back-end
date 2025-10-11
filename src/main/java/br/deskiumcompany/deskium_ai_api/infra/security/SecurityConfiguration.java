@@ -1,0 +1,56 @@
+package br.deskiumcompany.deskium_ai_api.infra.security;
+
+import br.deskiumcompany.deskium_ai_api.domain.enums.TipoUsuario;
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.context.annotation.Bean;
+import org.springframework.context.annotation.Configuration;
+import org.springframework.http.HttpMethod;
+import org.springframework.security.authentication.AuthenticationManager;
+import org.springframework.security.config.annotation.authentication.configuration.AuthenticationConfiguration;
+import org.springframework.security.config.annotation.web.builders.HttpSecurity;
+import org.springframework.security.config.annotation.web.configuration.EnableWebSecurity;
+import org.springframework.security.config.http.SessionCreationPolicy;
+import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
+import org.springframework.security.crypto.password.PasswordEncoder;
+import org.springframework.security.web.SecurityFilterChain;
+import org.springframework.security.web.authentication.UsernamePasswordAuthenticationFilter;
+
+@Configuration
+@EnableWebSecurity //Habilitando a configuração do web security
+public class SecurityConfiguration {
+    @Autowired
+    SecurityFilter securityFilter;
+
+    @Bean
+    public SecurityFilterChain securityFilterChain(HttpSecurity httpSecurity) throws Exception{
+        return httpSecurity
+                // 1. Desabilita proteção CSRF
+                .csrf(csrf -> csrf.disable())
+
+                // define que a authentificação será Stateless ou seja, por token JWT, padrão REST.
+                .sessionManagement(session -> session.sessionCreationPolicy(SessionCreationPolicy.STATELESS))
+
+                //definindo regra de roles onde cada usuário podeira acessar ou não
+                .authorizeHttpRequests(authorize -> authorize
+                        .requestMatchers(HttpMethod.POST, "/auth/login").permitAll()
+                        .requestMatchers(HttpMethod.POST, "/empresas").hasAnyRole(TipoUsuario.GESTOR_SUPORTE.name())
+                        .anyRequest().authenticated()
+                )
+                //Filtro antes da validação das ROLES
+                .addFilterBefore(securityFilter, UsernamePasswordAuthenticationFilter.class)
+                .build();
+    }
+
+    // Gerencia autenticação - responsável por validar credenciais (email e senha)
+    // Usado quando o usuário faz login;
+    @Bean
+    public AuthenticationManager authenticationManager(AuthenticationConfiguration authenticationConfiguration) throws Exception {
+        return authenticationConfiguration.getAuthenticationManager();
+    }
+
+    // 2. PasswordEncoder - Encripta e valida senhas
+    @Bean
+    public PasswordEncoder passwordEncoder(){
+        return new BCryptPasswordEncoder();
+    }
+}
