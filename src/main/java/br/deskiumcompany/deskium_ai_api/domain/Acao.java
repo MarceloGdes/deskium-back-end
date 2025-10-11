@@ -19,7 +19,7 @@ public class Acao extends EntidadeBase {
     @ManyToOne(optional = false)
     private Ticket ticket;
 
-    @Column(nullable = false, unique = true)
+    @Column(nullable = false)
     private int numAcao;
 
     @Column(nullable = false)
@@ -32,15 +32,15 @@ public class Acao extends EntidadeBase {
     @ManyToOne(optional = false)
     private Usuario usuarioAutor;
 
-    //Caso seja um corpo de ação originada de e-mail, para não perder a formatação, irei armazenar o própio HTML
+    //para não perder a formatação, irei armazenar o própio HTML
     //Text -> sem limite de caracteres
-    @Column(columnDefinition = "TEXT")
+    @Column(columnDefinition = "TEXT", nullable = false)
     private String html;
 
     // Texto puro, para buscas aprimoradas
     // Limite de 10k de caracteres.
     //TODO: Implementar validação no front e antes de salvar no banco
-    @Column(length = 10000)
+    @Column(length = 10000, nullable = false)
     private String textoPuro;
 
     @Enumerated(EnumType.STRING)
