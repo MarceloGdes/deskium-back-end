@@ -1,4 +1,4 @@
-package br.deskiumcompany.deskium_ai_api.service;
+package br.deskiumcompany.deskium_ai_api.infra.security;
 
 import br.deskiumcompany.deskium_ai_api.domain.Usuario;
 import com.auth0.jwt.JWT;

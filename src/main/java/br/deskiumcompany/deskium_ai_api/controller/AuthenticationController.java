@@ -3,7 +3,7 @@ package br.deskiumcompany.deskium_ai_api.controller;
 import br.deskiumcompany.deskium_ai_api.domain.Usuario;
 import br.deskiumcompany.deskium_ai_api.dto.auth.AuthenticationDTO;
 import br.deskiumcompany.deskium_ai_api.dto.auth.LoginResponseDto;
-import br.deskiumcompany.deskium_ai_api.service.JwtService;
+import br.deskiumcompany.deskium_ai_api.infra.security.JwtService;
 import br.deskiumcompany.deskium_ai_api.service.UsuarioService;
 import jakarta.validation.Valid;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -27,9 +27,9 @@ public class AuthenticationController {
 
     @PostMapping("/login")
     public ResponseEntity<LoginResponseDto> login(@RequestBody @Valid AuthenticationDTO dto){
+
         var emailSenhaToken = new UsernamePasswordAuthenticationToken(dto.getEmail(), dto.getSenha());
         var auth = authenticationManager.authenticate(emailSenhaToken);
-
         var token = jwtService.generateToken((Usuario) auth.getPrincipal());
 
         return ResponseEntity.ok(new LoginResponseDto(token));

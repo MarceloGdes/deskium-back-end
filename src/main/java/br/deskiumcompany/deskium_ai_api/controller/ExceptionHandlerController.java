@@ -55,7 +55,7 @@ public class ExceptionHandlerController {
 
     @ExceptionHandler(BadCredentialsException.class)
     public ResponseEntity<ApiExceptionDTO> handleBadCredentialsException(BadCredentialsException e){
-        ApiExceptionDTO apiExceptionDTO = new ApiExceptionDTO(e.getMessage());
+        ApiExceptionDTO apiExceptionDTO = new ApiExceptionDTO("E-mail inexistente ou senha inválida");
 
         return ResponseEntity.badRequest().body(apiExceptionDTO);
     }

@@ -1,6 +1,6 @@
 package br.deskiumcompany.deskium_ai_api.infra.security;
 
-import br.deskiumcompany.deskium_ai_api.service.JwtService;
+import br.deskiumcompany.deskium_ai_api.infra.security.JwtService;
 import br.deskiumcompany.deskium_ai_api.service.UsuarioService;
 import jakarta.servlet.FilterChain;
 import jakarta.servlet.ServletException;
