@@ -18,6 +18,7 @@ public class SolicitanteResponseDTO {
     private String cargo;
     private String setor;
     private String observacoes;
+    private boolean ativo;
 
 
     public SolicitanteResponseDTO(Solicitante solicitante) {
@@ -30,5 +31,6 @@ public class SolicitanteResponseDTO {
         this.cargo = solicitante.getCargo();
         this.setor = solicitante.getSetor();
         this.observacoes = solicitante.getObservacoes();
+        this.ativo = solicitante.getUsuario().isAtivo();
     }
 }

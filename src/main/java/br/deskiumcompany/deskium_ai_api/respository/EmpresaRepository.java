@@ -4,8 +4,12 @@ import br.deskiumcompany.deskium_ai_api.domain.Empresa;
 import org.springframework.data.jpa.repository.JpaRepository;
 import org.springframework.stereotype.Repository;
 
+import java.util.Optional;
+
 @Repository
 public interface EmpresaRepository extends JpaRepository<Empresa, Long> {
-    public boolean existsByEmail(String email);
-    public boolean existsByCnpj(String cnpj);
+    boolean existsByEmail(String email);
+    boolean existsByCnpj(String cnpj);
+
+    Optional<Empresa> findById(Long id);
 }

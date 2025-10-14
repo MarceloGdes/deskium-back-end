@@ -15,6 +15,10 @@ public class UsuarioService {
         return repository.existsByEmailAndAtivoIsTrue(email);
     }
 
+    protected Usuario findByEmail(String email){
+        return (Usuario) repository.findByEmailAndAtivoIsTrue(email);
+    }
+
     public UserDetails findByLogin(String email){
         return repository.findByEmailAndAtivoIsTrue(email);
     }

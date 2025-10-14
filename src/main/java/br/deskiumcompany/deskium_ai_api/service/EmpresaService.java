@@ -3,6 +3,7 @@ package br.deskiumcompany.deskium_ai_api.service;
 import br.deskiumcompany.deskium_ai_api.domain.Empresa;
 import br.deskiumcompany.deskium_ai_api.exception.BussinesException;
 import br.deskiumcompany.deskium_ai_api.respository.EmpresaRepository;
+import jakarta.persistence.EntityNotFoundException;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
@@ -24,6 +25,7 @@ public class EmpresaService {
     }
 
     public Empresa getById(Long id) {
-        return repository.getById(id) ;
+        return repository.findById(id)
+                .orElseThrow(() -> new EntityNotFoundException("Empresa não encontrada."));
     }
 }
