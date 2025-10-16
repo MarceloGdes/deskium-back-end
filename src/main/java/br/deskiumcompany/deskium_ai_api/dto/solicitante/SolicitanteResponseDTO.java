@@ -1,5 +1,6 @@
 package br.deskiumcompany.deskium_ai_api.dto.solicitante;
 
+import br.deskiumcompany.deskium_ai_api.domain.Empresa;
 import br.deskiumcompany.deskium_ai_api.domain.Solicitante;
 import lombok.AllArgsConstructor;
 import lombok.Data;
@@ -14,7 +15,7 @@ public class SolicitanteResponseDTO {
     private String email;
     private String celular;
     private String telefone;
-    private Long empresaId;
+    private Empresa empresa;
     private String cargo;
     private String setor;
     private String observacoes;
@@ -27,7 +28,7 @@ public class SolicitanteResponseDTO {
         this.email = solicitante.getUsuario().getEmail();
         this.celular = solicitante.getCelular();
         this.telefone = solicitante.getTelefone();
-        this.empresaId = solicitante.getEmpresa().getId();
+        this.empresa = solicitante.getEmpresa();
         this.cargo = solicitante.getCargo();
         this.setor = solicitante.getSetor();
         this.observacoes = solicitante.getObservacoes();

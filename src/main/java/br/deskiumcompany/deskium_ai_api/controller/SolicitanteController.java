@@ -1,7 +1,6 @@
 package br.deskiumcompany.deskium_ai_api.controller;
 
 
-import br.deskiumcompany.deskium_ai_api.domain.Empresa;
 import br.deskiumcompany.deskium_ai_api.domain.Solicitante;
 import br.deskiumcompany.deskium_ai_api.dto.solicitante.SolicitanteInsertDTO;
 import br.deskiumcompany.deskium_ai_api.dto.solicitante.SolicitanteResponseDTO;
@@ -16,7 +15,6 @@ import org.springframework.web.bind.annotation.*;
 import org.springframework.web.util.UriComponentsBuilder;
 
 import java.net.URI;
-import java.util.List;
 
 @RestController
 @RequestMapping("solicitantes")
@@ -33,7 +31,7 @@ public class SolicitanteController {
 
         SolicitanteResponseDTO response = new SolicitanteResponseDTO(solicitante);
 
-        URI uri = builder.path("/empresas/{id}").buildAndExpand(response.getId()).toUri();
+        URI uri = builder.path("/solicitantes/{id}").buildAndExpand(response.getId()).toUri();
         return ResponseEntity.created(uri).body(response);
     }
 

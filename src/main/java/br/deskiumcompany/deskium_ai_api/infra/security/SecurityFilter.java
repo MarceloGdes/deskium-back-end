@@ -1,6 +1,5 @@
 package br.deskiumcompany.deskium_ai_api.infra.security;
 
-import br.deskiumcompany.deskium_ai_api.infra.security.JwtService;
 import br.deskiumcompany.deskium_ai_api.service.UsuarioService;
 import jakarta.servlet.FilterChain;
 import jakarta.servlet.ServletException;
@@ -28,13 +27,13 @@ public class SecurityFilter extends OncePerRequestFilter {
         var token = this.recoverToken(request);
 
         if(token != null){
-           var login = jwtService.validateToken(token);
+           String login = jwtService.validateToken(token);
            UserDetails user = usuarioService.findByLogin(login);
 
            //Validando as informações do ROLE
            var authentication = new UsernamePasswordAuthenticationToken(user, null, user.getAuthorities());
 
-           //Salvo a autenticação no contexto do security, para os próximos filtros
+           //Salvo a autenticação no contexto do security, para os próximos filtros e requisições
            SecurityContextHolder.getContext().setAuthentication(authentication);
         }
         //Vai para o proximo filtro que ira validar a necessidade do token ou não

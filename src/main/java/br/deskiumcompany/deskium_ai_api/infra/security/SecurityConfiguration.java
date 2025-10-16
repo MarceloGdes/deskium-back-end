@@ -36,7 +36,7 @@ public class SecurityConfiguration {
                 //definindo regra de roles onde cada usuário podeira acessar ou não
                 .authorizeHttpRequests(authorize -> authorize
                         .requestMatchers(HttpMethod.POST, "/auth/login").permitAll()
-                        .requestMatchers(HttpMethod.POST, "/empresas").hasAnyRole(TipoUsuario.GESTOR_SUPORTE.name())
+                        .requestMatchers(HttpMethod.POST, "/empresas").hasAnyRole(TipoUsuario.SUPORTE.name())
                         .anyRequest().authenticated()
                 )
                 //Tirando bloqueio de CORS - Apenas para dev, em prod deve ser configurado

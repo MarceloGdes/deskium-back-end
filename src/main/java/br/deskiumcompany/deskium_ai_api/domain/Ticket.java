@@ -1,7 +1,9 @@
 package br.deskiumcompany.deskium_ai_api.domain;
 
+import br.deskiumcompany.deskium_ai_api.domain.enums.OrigemAcao;
 import br.deskiumcompany.deskium_ai_api.domain.enums.Status;
 import br.deskiumcompany.deskium_ai_api.domain.enums.SubStatus;
+import br.deskiumcompany.deskium_ai_api.dto.ticket.TicketInsertDTO;
 import jakarta.persistence.*;
 import lombok.AllArgsConstructor;
 import lombok.Data;
@@ -9,6 +11,7 @@ import lombok.NoArgsConstructor;
 
 import java.time.LocalDateTime;
 import java.time.LocalTime;
+import java.util.ArrayList;
 import java.util.List;
 
 @Entity
@@ -48,6 +51,35 @@ public class Ticket extends EntidadeBase{
     @ManyToOne()
     private Prioridade prioridade;
 
-    @OneToMany(mappedBy = "ticket")
+    @OneToMany(mappedBy = "ticket", cascade = CascadeType.ALL)
     private List<Acao> acoes;
+
+    public Ticket(TicketInsertDTO dto, Usuario usuario) {
+        this.titulo = dto.getTitulo();
+        this.status = Status.ABERTO;
+
+        var solicitante = new Solicitante();
+        solicitante.setUsuario(usuario);
+        this.solicitante = solicitante;
+
+        var motivo = new Motivo();
+        motivo.setId(dto.getMotivoId());
+        this.motivo = motivo;
+
+        var categoria = new Categoria();
+        categoria.setId(dto.getCategoriaId());
+        this.categoria = categoria;
+
+        this.subStatus = SubStatus.NOVO;
+
+        Acao acao = new Acao();
+        acao.setAcaoInterna(false);
+        acao.setNumAcao(1);
+        acao.setOrigemAcao(OrigemAcao.SISTEMA);
+        acao.setHtml(dto.getDescricaoHtml());
+        acao.setUsuarioAutor(usuario);
+
+        this.acoes = new ArrayList<>();
+        this.acoes.add(acao);
+    }
 }

@@ -1,6 +1,8 @@
 package br.deskiumcompany.deskium_ai_api.domain;
 
-import br.deskiumcompany.deskium_ai_api.domain.enums.PerfilSuporte;
+import br.deskiumcompany.deskium_ai_api.domain.enums.TipoUsuario;
+import br.deskiumcompany.deskium_ai_api.dto.suporte.SuporteInsertDTO;
+import br.deskiumcompany.deskium_ai_api.exception.BussinesException;
 import jakarta.persistence.*;
 import lombok.AllArgsConstructor;
 import lombok.Data;
@@ -13,13 +15,26 @@ import java.util.List;
 @AllArgsConstructor
 @NoArgsConstructor
 public class Suporte extends EntidadeBase{
-    @Enumerated(EnumType.STRING)
-    @Column(nullable = false)//Armazena o texto do ENUM no banco.
-    private PerfilSuporte pefil;
+    @OneToOne(optional = false, cascade = CascadeType.ALL)
+    private Usuario usuario;
 
     @OneToMany(mappedBy = "suporte")
     private List<Ticket> tickets;
 
-    @OneToOne(optional = false)
-    private Usuario usuario;
+    public Suporte(SuporteInsertDTO dto) throws BussinesException {
+        try {
+            var usuario = new Usuario();
+
+            usuario.setEmail(dto.getEmail());
+            usuario.setSenha(dto.getSenha());
+            usuario.setNomeCompleto(dto.getNomeCompleto());
+
+            usuario.setTipoUsuario(TipoUsuario.valueOf(dto.getTipoUsuarioSuporte()));
+
+            this.usuario = usuario;
+
+        }catch (IllegalArgumentException e) {
+            throw new BussinesException("Tipo do usuário do suporte inválido.");
+        }
+    }
 }
