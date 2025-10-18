@@ -7,7 +7,6 @@ import com.auth0.jwt.exceptions.JWTCreationException;
 import com.auth0.jwt.exceptions.JWTVerificationException;
 import org.springframework.stereotype.Service;
 
-import javax.crypto.SecretKey;
 import java.time.Instant;
 import java.time.LocalDateTime;
 import java.time.ZoneOffset;
@@ -34,18 +33,15 @@ public class JwtService {
         }
     }
 
-    public String validateToken(String token){
-        try{
-            Algorithm algorithm = Algorithm.HMAC256(secret);
-            return JWT.require(algorithm)
-                    .withIssuer("deskium-api")
-                    .build()
-                    .verify(token)
-                    .getSubject();
+    public String validateToken(String token) throws JWTVerificationException {
 
-        }catch (JWTVerificationException e){
-            return "";
-        }
+        Algorithm algorithm = Algorithm.HMAC256(secret);
+        return JWT.require(algorithm)
+                .withIssuer("deskium-api")
+                .build()
+                .verify(token)
+                .getSubject();
+
     }
 
     private Instant genExpirationDate(){
