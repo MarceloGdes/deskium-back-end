@@ -40,6 +40,8 @@ public class SecurityConfiguration {
                 .authorizeHttpRequests(authorize -> authorize
                         .requestMatchers(HttpMethod.POST, "/auth/login").permitAll()
                         .requestMatchers(HttpMethod.POST, "/empresas").hasAnyRole(TipoUsuario.SUPORTE.name())
+                        .requestMatchers(HttpMethod.GET, "/solicitantes/me").hasAnyRole(TipoUsuario.SOLICITANTE.name())
+                        .requestMatchers(HttpMethod.POST, "/tickets").hasAnyRole(TipoUsuario.SOLICITANTE.name())
                         .anyRequest().authenticated()
                 )
                 //Tirando bloqueio de CORS - Apenas para dev, em prod deve ser configurado

@@ -2,6 +2,7 @@ package br.deskiumcompany.deskium_ai_api.controller;
 
 
 import br.deskiumcompany.deskium_ai_api.domain.Solicitante;
+import br.deskiumcompany.deskium_ai_api.domain.Usuario;
 import br.deskiumcompany.deskium_ai_api.dto.solicitante.SolicitanteInsertDTO;
 import br.deskiumcompany.deskium_ai_api.dto.solicitante.SolicitanteResponseDTO;
 import br.deskiumcompany.deskium_ai_api.dto.solicitante.SolicitanteUpdateDto;
@@ -11,6 +12,7 @@ import jakarta.persistence.EntityNotFoundException;
 import jakarta.validation.Valid;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.ResponseEntity;
+import org.springframework.security.core.Authentication;
 import org.springframework.web.bind.annotation.*;
 import org.springframework.web.util.UriComponentsBuilder;
 
@@ -33,6 +35,14 @@ public class SolicitanteController {
 
         URI uri = builder.path("/solicitantes/{id}").buildAndExpand(response.getId()).toUri();
         return ResponseEntity.created(uri).body(response);
+    }
+
+    //Authenticação injetada no contexto pelo SpringSecurity
+    @GetMapping("/me")
+    public ResponseEntity<SolicitanteResponseDTO> getByLoggedUser(Authentication auth) throws EntityNotFoundException {
+        Usuario usuario = (Usuario) auth.getPrincipal();
+        Solicitante solicitante = solicitanteService.getByUsuarioId(usuario.getId());
+        return ResponseEntity.ok(new SolicitanteResponseDTO(solicitante));
     }
 
     @GetMapping("/{id}")
