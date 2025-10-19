@@ -67,9 +67,11 @@ public class Ticket extends EntidadeBase{
         motivo.setId(dto.getMotivoId());
         this.motivo = motivo;
 
-        var categoria = new Categoria();
-        categoria.setId(dto.getCategoriaId());
-        this.categoria = categoria;
+        if(dto.getCategoriaId() != null){
+            var categoria = new Categoria();
+            categoria.setId(dto.getCategoriaId());
+            this.categoria = categoria;
+        }
 
         this.subStatus = SubStatus.NOVO;
 

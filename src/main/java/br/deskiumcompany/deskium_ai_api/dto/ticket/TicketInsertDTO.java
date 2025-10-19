@@ -22,7 +22,6 @@ public class TicketInsertDTO {
     @NotNull
     private Long motivoId;
 
-    @NotNull
     private Long categoriaId;
 
     @NotBlank

@@ -31,16 +31,18 @@ public class TicketService {
     public Ticket insert(Ticket ticket) throws BussinesException{
         var solicitante = ticket.getSolicitante();
         solicitante = solicitanteService.getByUsuarioId(solicitante.getUsuario().getId());
+        ticket.setSolicitante(solicitante);
 
         var categoria = ticket.getCategoria();
-        categoria = categoriaService.getById(categoria.getId());
+        if(categoria != null){
+            categoria = categoriaService.getById(categoria.getId());
+            ticket.setCategoria(categoria);
+        }
 
         var motivo = ticket.getMotivo();
         motivo = motivoService.getById(motivo.getId());
-
         ticket.setMotivo(motivo);
-        ticket.setCategoria(categoria);
-        ticket.setSolicitante(solicitante);
+
         ticket.setSuporte(suporteService.getSuporteComMenosTickets());
 
         var acao = ticket.getAcoes().getFirst();
