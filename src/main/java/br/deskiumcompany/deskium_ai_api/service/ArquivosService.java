@@ -21,7 +21,12 @@ public class ArquivosService {
         if(file.isEmpty())
             throw new BussinesException("Nenhum arquivo enviado");
 
+
         Path uploadsPath = Paths.get(uploadDir);
+
+        if(!Files.exists(uploadsPath)){
+            Files.createDirectories(uploadsPath);
+        }
 
         //Criando filePath de destiono e copiando o arquivo.
         String fileName = UUID.randomUUID() + "_" +  file.getOriginalFilename()
