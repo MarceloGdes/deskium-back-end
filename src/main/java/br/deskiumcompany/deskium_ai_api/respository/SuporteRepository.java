@@ -14,7 +14,7 @@ public interface SuporteRepository extends JpaRepository<Suporte, Long> {
     // Faz um LEFT JOIN na tabela de tickets, filtrando apenas os com Status de aberto e
     // vincula a cada suporte
     //Suportes sem tickets irão ser apresentados também, por conta do LEFT JOIN
-    //Agupo os registros por suporte e ordeno de forma crescente, com base na quantidade de tickets de cada um.
+    //Agupa os registros por suporte e ordena de forma crescente, com base na quantidade de tickets de cada um.
     @Query("""
         SELECT s 
         FROM Suporte s

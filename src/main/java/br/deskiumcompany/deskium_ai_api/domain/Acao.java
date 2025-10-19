@@ -47,6 +47,6 @@ public class Acao extends EntidadeBase {
     @Column(nullable = false)
     private OrigemAcao origemAcao;
 
-    @OneToMany(mappedBy = "acao")
+    @OneToMany(mappedBy = "acao", cascade = CascadeType.ALL)
     private List<Anexo> anexos;
 }

@@ -4,6 +4,7 @@ import br.deskiumcompany.deskium_ai_api.domain.Ticket;
 import br.deskiumcompany.deskium_ai_api.domain.Usuario;
 import br.deskiumcompany.deskium_ai_api.dto.ticket.TicketInsertDTO;
 import br.deskiumcompany.deskium_ai_api.dto.ticket.TicketResponseDTO;
+import br.deskiumcompany.deskium_ai_api.exception.BussinesException;
 import br.deskiumcompany.deskium_ai_api.service.TicketService;
 import jakarta.validation.Valid;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -29,7 +30,7 @@ public class TicketController {
     @PostMapping
     private ResponseEntity<TicketResponseDTO> create(@RequestBody @Valid TicketInsertDTO dto,
                                                      Authentication authentication,
-                                                     UriComponentsBuilder builder){
+                                                     UriComponentsBuilder builder) throws BussinesException {
 
         var usuario = (Usuario) authentication.getPrincipal();
         var ticket = service.insert(new Ticket(dto, usuario));

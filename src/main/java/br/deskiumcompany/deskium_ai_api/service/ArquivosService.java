@@ -36,4 +36,8 @@ public class ArquivosService {
 
         return fileName;
     }
+
+    public boolean existsByFileName(String fileName){
+        return Files.exists(Paths.get(uploadDir, fileName));
+    }
 }

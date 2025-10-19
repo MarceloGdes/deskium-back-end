@@ -3,6 +3,7 @@ package br.deskiumcompany.deskium_ai_api.domain;
 import br.deskiumcompany.deskium_ai_api.domain.enums.OrigemAcao;
 import br.deskiumcompany.deskium_ai_api.domain.enums.Status;
 import br.deskiumcompany.deskium_ai_api.domain.enums.SubStatus;
+import br.deskiumcompany.deskium_ai_api.dto.arquivo.ArquivoDTO;
 import br.deskiumcompany.deskium_ai_api.dto.ticket.TicketInsertDTO;
 import jakarta.persistence.*;
 import lombok.AllArgsConstructor;
@@ -78,6 +79,18 @@ public class Ticket extends EntidadeBase{
         acao.setOrigemAcao(OrigemAcao.SISTEMA);
         acao.setHtml(dto.getDescricaoHtml());
         acao.setUsuarioAutor(usuario);
+
+        if(dto.getArquivos() != null && !dto.getArquivos().isEmpty()){
+            List<Anexo> anexos = new ArrayList<>();
+
+            for (ArquivoDTO arquivoDTO : dto.getArquivos()){
+                Anexo anexo = new Anexo();
+                anexo.setFileName(arquivoDTO.getFileName());
+                anexos.add(anexo);
+            }
+
+            acao.setAnexos(anexos);
+        }
 
         this.acoes = new ArrayList<>();
         this.acoes.add(acao);

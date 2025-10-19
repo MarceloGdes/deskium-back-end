@@ -1,6 +1,8 @@
 package br.deskiumcompany.deskium_ai_api.service;
 
+import br.deskiumcompany.deskium_ai_api.domain.Anexo;
 import br.deskiumcompany.deskium_ai_api.domain.Ticket;
+import br.deskiumcompany.deskium_ai_api.exception.BussinesException;
 import br.deskiumcompany.deskium_ai_api.respository.TicketRespository;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
@@ -23,7 +25,10 @@ public class TicketService {
     @Autowired
     private TicketRespository respository;
 
-    public Ticket insert(Ticket ticket){
+    @Autowired
+    private AcaoService acaoService;
+
+    public Ticket insert(Ticket ticket) throws BussinesException{
         var solicitante = ticket.getSolicitante();
         solicitante = solicitanteService.getByUsuarioId(solicitante.getUsuario().getId());
 
@@ -38,11 +43,19 @@ public class TicketService {
         ticket.setSolicitante(solicitante);
         ticket.setSuporte(suporteService.getSuporteComMenosTickets());
 
-        //Test TODO: Remover posteriormente
-        //Referencia  o objeto acao em memoria
         var acao = ticket.getAcoes().getFirst();
-        acao.setTextoPuro(acao.getHtml());
+        acao.setTextoPuro(acaoService.extractTextFromHTML(acao.getHtml()));
         acao.setTicket(ticket);
+
+        if(acao.getAnexos() != null && !acao.getAnexos().isEmpty()){
+            for (Anexo anexo : acao.getAnexos()) {
+                if (acaoService.arquivoExistsByFileName(anexo.getFileName())) {
+                    anexo.setAcao(acao);
+                } else {
+                    throw new BussinesException("o arquivo: " + anexo.getFileName() + " não existe. Faça upload novamente.");
+                }
+            }
+        }
 
         return respository.save(ticket);
     }
