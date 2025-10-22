@@ -14,6 +14,8 @@ import org.springframework.web.util.UriComponentsBuilder;
 
 import java.io.IOException;
 import java.net.URI;
+import java.util.ArrayList;
+import java.util.List;
 
 @RestController
 @RequestMapping("arquivos")
@@ -23,11 +25,17 @@ public class ArquivoController {
     private ArquivosService service;
 
     //MultipartFile é uma interface usada para representar um arquivo enviado via upload (multipart/form-data) em uma requisição HTTP
+    //Spring recebe esse arquivo e faz o gerenciamento.
     @PostMapping()
-    public ResponseEntity upload(@RequestParam("file") MultipartFile file, UriComponentsBuilder builder) throws IOException, BussinesException {
-        var fileName = service.saveFile(file);
+    public ResponseEntity upload(@RequestParam("file") List<MultipartFile> files, UriComponentsBuilder builder) throws IOException, BussinesException {
+        var fileNames = service.saveFiles(files);
 
-        URI uri = builder.path("/arquivos/{fileName}").buildAndExpand(fileName).toUri();
-        return ResponseEntity.created(uri).body(new ArquivoDTO(fileName));
+        List<ArquivoDTO> arquivosDTO = new ArrayList<>();
+        fileNames.forEach(fileName -> {
+            arquivosDTO.add(new ArquivoDTO(fileName));
+        });
+
+        URI uri = builder.path("/arquivos/fileName").buildAndExpand().toUri();
+        return ResponseEntity.created(uri).body(arquivosDTO);
     }
 }
