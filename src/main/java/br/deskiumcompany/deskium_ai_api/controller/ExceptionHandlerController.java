@@ -10,6 +10,7 @@ import org.springframework.validation.FieldError;
 import org.springframework.web.bind.MethodArgumentNotValidException;
 import org.springframework.web.bind.annotation.ControllerAdvice;
 import org.springframework.web.bind.annotation.ExceptionHandler;
+import org.springframework.web.multipart.MaxUploadSizeExceededException;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -56,6 +57,13 @@ public class ExceptionHandlerController {
     @ExceptionHandler(BadCredentialsException.class)
     public ResponseEntity<ApiExceptionDTO> handleBadCredentialsException(BadCredentialsException e){
         ApiExceptionDTO apiExceptionDTO = new ApiExceptionDTO("E-mail inexistente ou senha inválida");
+
+        return ResponseEntity.badRequest().body(apiExceptionDTO);
+    }
+
+    @ExceptionHandler(MaxUploadSizeExceededException.class)
+    public ResponseEntity<ApiExceptionDTO> handleMaxUploadSizeExceededException(MaxUploadSizeExceededException e){
+        ApiExceptionDTO apiExceptionDTO = new ApiExceptionDTO("O tamanho de todos os arquivos enviados ultrapassa o limite de 50MB. Verifique os anexos enviados.");
 
         return ResponseEntity.badRequest().body(apiExceptionDTO);
     }
