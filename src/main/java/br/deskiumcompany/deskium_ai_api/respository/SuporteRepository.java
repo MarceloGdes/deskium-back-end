@@ -19,8 +19,9 @@ public interface SuporteRepository extends JpaRepository<Suporte, Long> {
         SELECT s 
         FROM Suporte s
         INNER JOIN Usuario u 
-            on s.usuario.id = u.id 
-            and u.ativo = TRUE
+            ON s.usuario.id = u.id 
+            AND u.ativo = TRUE
+            AND u.tipoUsuario = 'SUPORTE'
         LEFT JOIN Ticket t 
             ON t.suporte.id = s.id 
             AND t.status = 'ABERTO'

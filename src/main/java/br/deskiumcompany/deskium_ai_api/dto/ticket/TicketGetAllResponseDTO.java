@@ -1,8 +1,10 @@
 package br.deskiumcompany.deskium_ai_api.dto.ticket;
 
-import br.deskiumcompany.deskium_ai_api.domain.*;
+import br.deskiumcompany.deskium_ai_api.domain.Categoria;
+import br.deskiumcompany.deskium_ai_api.domain.Motivo;
+import br.deskiumcompany.deskium_ai_api.domain.Prioridade;
+import br.deskiumcompany.deskium_ai_api.domain.Ticket;
 import br.deskiumcompany.deskium_ai_api.domain.enums.Status;
-import br.deskiumcompany.deskium_ai_api.dto.acao.AcaoResponseDTO;
 import br.deskiumcompany.deskium_ai_api.dto.solicitante.SolicitanteResponseDTO;
 import br.deskiumcompany.deskium_ai_api.dto.suporte.SuporteResponseDTO;
 import lombok.AllArgsConstructor;
@@ -11,13 +13,11 @@ import lombok.NoArgsConstructor;
 
 import java.time.LocalDateTime;
 import java.time.LocalTime;
-import java.util.ArrayList;
-import java.util.List;
 
 @Data
 @AllArgsConstructor
 @NoArgsConstructor
-public class TicketResponseDTO {
+public class TicketGetAllResponseDTO {
     private Long id;
     private LocalDateTime criadoEm;
     private String titulo;
@@ -33,9 +33,8 @@ public class TicketResponseDTO {
     private Categoria categoria;
     private String subStatus;
     private Prioridade prioridade;
-    private List<AcaoResponseDTO> acoes;
 
-    public TicketResponseDTO(Ticket ticket) {
+    public TicketGetAllResponseDTO(Ticket ticket) {
         this.id = ticket.getId();
         this.criadoEm = ticket.getCriadoEm();
         this.titulo = ticket.getTitulo();
@@ -51,11 +50,6 @@ public class TicketResponseDTO {
         this.categoria = ticket.getCategoria();
         this.subStatus = ticket.getSubStatus().getDescricao();
         this.prioridade = ticket.getPrioridade();
-
-        this.acoes = new ArrayList<>();
-        for (Acao acao : ticket.getAcoes()){
-            this.acoes.add(new AcaoResponseDTO(acao));
-        }
 
     }
 }

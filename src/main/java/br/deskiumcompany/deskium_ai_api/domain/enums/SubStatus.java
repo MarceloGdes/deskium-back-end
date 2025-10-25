@@ -1,7 +1,17 @@
 package br.deskiumcompany.deskium_ai_api.domain.enums;
 
 public enum SubStatus {
-    NOVO,
-    EM_ATENDIMENTO,
-    AGUARDANDO_RETORNO
+    NOVO("Novo"),
+    EM_ATENDIMENTO("Em atendimento"),
+    AGUARDANDO_RETORNO("Aguardando retono");
+
+    private final String desc;
+
+    SubStatus (String desc){
+        this.desc = desc;
+    }
+
+    public String getDescricao() {
+        return desc;
+    }
 }

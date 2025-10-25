@@ -2,10 +2,14 @@ package br.deskiumcompany.deskium_ai_api.service;
 
 import br.deskiumcompany.deskium_ai_api.domain.Anexo;
 import br.deskiumcompany.deskium_ai_api.domain.Ticket;
+import br.deskiumcompany.deskium_ai_api.domain.Usuario;
+import br.deskiumcompany.deskium_ai_api.domain.enums.Status;
 import br.deskiumcompany.deskium_ai_api.exception.BussinesException;
 import br.deskiumcompany.deskium_ai_api.respository.TicketRespository;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
+
+import java.util.List;
 
 @Service
 public class TicketService {
@@ -60,5 +64,9 @@ public class TicketService {
         }
 
         return respository.save(ticket);
+    }
+
+    public List<Ticket> getAllTickts(Usuario usuario, Status status) {
+        return respository.findAllBySolicitante(usuario, status);
     }
 }
