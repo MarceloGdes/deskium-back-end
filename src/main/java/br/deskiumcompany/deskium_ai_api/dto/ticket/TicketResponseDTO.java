@@ -4,6 +4,7 @@ import br.deskiumcompany.deskium_ai_api.domain.*;
 import br.deskiumcompany.deskium_ai_api.domain.enums.Status;
 import br.deskiumcompany.deskium_ai_api.dto.acao.AcaoResponseDTO;
 import br.deskiumcompany.deskium_ai_api.dto.solicitante.SolicitanteResponseDTO;
+import br.deskiumcompany.deskium_ai_api.dto.substatus.SubStatusDTO;
 import br.deskiumcompany.deskium_ai_api.dto.suporte.SuporteResponseDTO;
 import lombok.AllArgsConstructor;
 import lombok.Data;
@@ -31,7 +32,7 @@ public class TicketResponseDTO {
     private SuporteResponseDTO suporte;
     private Motivo motivo;
     private Categoria categoria;
-    private String subStatus;
+    private SubStatusDTO subStatus;
     private Prioridade prioridade;
     private List<AcaoResponseDTO> acoes;
 
@@ -49,7 +50,7 @@ public class TicketResponseDTO {
         this.suporte = new SuporteResponseDTO(ticket.getSuporte());
         this.motivo = ticket.getMotivo();
         this.categoria = ticket.getCategoria();
-        this.subStatus = ticket.getSubStatus().getDescricao();
+        this.subStatus = new SubStatusDTO(ticket.getSubStatus());
         this.prioridade = ticket.getPrioridade();
 
         this.acoes = new ArrayList<>();
