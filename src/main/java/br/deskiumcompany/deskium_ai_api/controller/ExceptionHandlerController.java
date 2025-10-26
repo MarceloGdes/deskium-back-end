@@ -10,6 +10,7 @@ import org.springframework.validation.FieldError;
 import org.springframework.web.bind.MethodArgumentNotValidException;
 import org.springframework.web.bind.annotation.ControllerAdvice;
 import org.springframework.web.bind.annotation.ExceptionHandler;
+import org.springframework.web.method.annotation.MethodArgumentTypeMismatchException;
 import org.springframework.web.multipart.MaxUploadSizeExceededException;
 
 import java.util.ArrayList;
@@ -64,6 +65,13 @@ public class ExceptionHandlerController {
     @ExceptionHandler(MaxUploadSizeExceededException.class)
     public ResponseEntity<ApiExceptionDTO> handleMaxUploadSizeExceededException(MaxUploadSizeExceededException e){
         ApiExceptionDTO apiExceptionDTO = new ApiExceptionDTO("O tamanho de todos os arquivos enviados ultrapassa o limite de 50MB. Verifique os anexos enviados.");
+
+        return ResponseEntity.badRequest().body(apiExceptionDTO);
+    }
+
+    @ExceptionHandler(MethodArgumentTypeMismatchException.class)
+    public ResponseEntity<ApiExceptionDTO> handleMethodArgumentTypeMismatchException(MethodArgumentTypeMismatchException e){
+        ApiExceptionDTO apiExceptionDTO = new ApiExceptionDTO("Parametro: '" + e.getParameter().getParameterName() + "' preenchido incorretamente. Verifique.");
 
         return ResponseEntity.badRequest().body(apiExceptionDTO);
     }
