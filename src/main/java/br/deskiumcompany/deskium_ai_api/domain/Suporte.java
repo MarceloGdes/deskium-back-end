@@ -16,6 +16,7 @@ import java.util.List;
 @NoArgsConstructor
 public class Suporte extends EntidadeBase{
     @OneToOne(optional = false, cascade = CascadeType.ALL)
+    @JoinColumn(name = "usuario_id")
     private Usuario usuario;
 
     @OneToMany(mappedBy = "suporte")

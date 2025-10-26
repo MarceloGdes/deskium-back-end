@@ -17,6 +17,7 @@ import java.util.List;
 public class Acao extends EntidadeBase {
 
     @ManyToOne(optional = false)
+    @JoinColumn(name = "ticket_id")
     private Ticket ticket;
 
     @Column(nullable = false)

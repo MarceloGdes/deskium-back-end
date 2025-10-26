@@ -29,9 +29,11 @@ public class Solicitante extends EntidadeBase{
     private String observacoes;
 
     @ManyToOne(optional = false)
+    @JoinColumn(name = "empresa_id")
     private Empresa empresa;
 
     @OneToOne(optional = false, cascade = CascadeType.ALL)
+    @JoinColumn(name = "usuario_id")
     private Usuario usuario;
 
     @OneToMany(mappedBy = "solicitante")

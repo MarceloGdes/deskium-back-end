@@ -3,6 +3,7 @@ package br.deskiumcompany.deskium_ai_api.controller;
 import br.deskiumcompany.deskium_ai_api.domain.Ticket;
 import br.deskiumcompany.deskium_ai_api.domain.Usuario;
 import br.deskiumcompany.deskium_ai_api.domain.enums.Status;
+import br.deskiumcompany.deskium_ai_api.domain.enums.SubStatus;
 import br.deskiumcompany.deskium_ai_api.dto.ticket.TicketGetAllResponseDTO;
 import br.deskiumcompany.deskium_ai_api.dto.ticket.TicketInsertDTO;
 import br.deskiumcompany.deskium_ai_api.dto.ticket.TicketResponseDTO;
@@ -45,10 +46,18 @@ public class TicketController {
     @GetMapping("my-tickets")
     private ResponseEntity<List<TicketGetAllResponseDTO>> getAll(
             Authentication auth,
-            @RequestParam(value = "status", required = false) Status status){
+            @RequestParam(value = "status", required = false) Status status,
+            @RequestParam(value = "ticketId", required = false) Long ticketId,
+            //declarando o default value, pois quando a string é nula, acaba estourando erro no banco de dados.
+            @RequestParam(value = "assunto", required = false, defaultValue = "") String assunto,
+            @RequestParam(value = "responsavel", required = false, defaultValue = "") String suporte,
+            @RequestParam(value = "subStatus", required = false) SubStatus subStatus,
+            @RequestParam(value = "motivoId", required = false) Long motivoId,
+            @RequestParam(value = "categoriaId", required = false) Long categoriaId){
 
         var usuario = (Usuario) auth.getPrincipal();
-        List<Ticket> tickets = service.getAllTickts(usuario, status);
+        List<Ticket> tickets = service.getAllTickts(usuario, status, ticketId, assunto, suporte,
+                subStatus, motivoId, categoriaId);
 
         List<TicketGetAllResponseDTO> ticketsResponse = new ArrayList<>();
 

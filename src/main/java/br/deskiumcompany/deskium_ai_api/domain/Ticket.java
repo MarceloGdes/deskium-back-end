@@ -34,15 +34,19 @@ public class Ticket extends EntidadeBase{
     private Status status;
 
     @ManyToOne(optional = false)
+    @JoinColumn(name = "solicitante_id")
     private Solicitante solicitante;
 
     @ManyToOne(optional = false)
+    @JoinColumn(name = "suporte_id")
     private Suporte suporte;
 
     @ManyToOne()
+    @JoinColumn(name = "motivo_id")
     private Motivo motivo;
 
     @ManyToOne()
+    @JoinColumn(name = "categoria_id")
     private Categoria categoria;
 
     @Enumerated(EnumType.STRING)
@@ -50,6 +54,7 @@ public class Ticket extends EntidadeBase{
     private SubStatus subStatus;
 
     @ManyToOne()
+    @JoinColumn(name = "prioridade_id")
     private Prioridade prioridade;
 
     @OneToMany(mappedBy = "ticket", cascade = CascadeType.ALL)
