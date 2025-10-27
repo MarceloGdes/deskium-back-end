@@ -71,7 +71,7 @@ public class ExceptionHandlerController {
 
     @ExceptionHandler(MethodArgumentTypeMismatchException.class)
     public ResponseEntity<ApiExceptionDTO> handleMethodArgumentTypeMismatchException(MethodArgumentTypeMismatchException e){
-        ApiExceptionDTO apiExceptionDTO = new ApiExceptionDTO("Parametro: '" + e.getParameter().getParameterName() + "' preenchido incorretamente. Verifique.");
+        ApiExceptionDTO apiExceptionDTO = new ApiExceptionDTO("Parametro '" + e.getParameter().getParameterName() + "' preenchido incorretamente. Verifique.");
 
         return ResponseEntity.badRequest().body(apiExceptionDTO);
     }
