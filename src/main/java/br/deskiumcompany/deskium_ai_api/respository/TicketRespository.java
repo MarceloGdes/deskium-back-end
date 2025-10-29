@@ -10,6 +10,7 @@ import org.springframework.data.repository.query.Param;
 import org.springframework.stereotype.Repository;
 
 import java.util.List;
+import java.util.Optional;
 
 //https://docs.spring.io/spring-data/jpa/reference/jpa/query-methods.html#jpa.named-parameters
 @Repository
@@ -46,4 +47,6 @@ public interface TicketRespository extends JpaRepository<Ticket, Long> {
             @Param("categoriaId")Long categoriaId);
 
     List<Ticket> findByTituloIgnoreCase(String titulo);
+
+    Optional<Ticket> findByIdAndSolicitanteUsuarioId(Long ticketId, Long usuarioId);
 }

@@ -12,8 +12,8 @@ public class StatusDTO {
     private String id;
     private String descricao;
 
-    public StatusDTO(Status subStatus) {
-        this.id = subStatus.name();
-        this.descricao = subStatus.getDescricao();
+    public StatusDTO(Status status) {
+        this.id = status.name();
+        this.descricao = status.getDescricao();
     }
 }

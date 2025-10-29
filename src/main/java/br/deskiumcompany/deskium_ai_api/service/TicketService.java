@@ -5,8 +5,10 @@ import br.deskiumcompany.deskium_ai_api.domain.Ticket;
 import br.deskiumcompany.deskium_ai_api.domain.Usuario;
 import br.deskiumcompany.deskium_ai_api.domain.enums.Status;
 import br.deskiumcompany.deskium_ai_api.domain.enums.SubStatus;
+import br.deskiumcompany.deskium_ai_api.domain.enums.TipoUsuario;
 import br.deskiumcompany.deskium_ai_api.exception.BussinesException;
 import br.deskiumcompany.deskium_ai_api.respository.TicketRespository;
+import jakarta.persistence.EntityNotFoundException;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
@@ -74,5 +76,16 @@ public class TicketService {
         return respository.findAllBySolicitante(usuario, status, ticketId, assunto, suporte,
                         subStatus, motivoId, categoriaId);
 
+    }
+
+    public Ticket getById(Long id, Usuario usuario){
+        //Valida se o solicitante pode requisitar o ticket do ID informado.
+        if(usuario.getTipoUsuario() == TipoUsuario.SOLICITANTE){
+            return respository.findByIdAndSolicitanteUsuarioId(id, usuario.getId())
+                    .orElseThrow(() -> new EntityNotFoundException("Ticket não encontrado."));
+        }else {
+            return respository.findById(id)
+                    .orElseThrow(() -> new EntityNotFoundException("Ticket não encontrado."));
+        }
     }
 }

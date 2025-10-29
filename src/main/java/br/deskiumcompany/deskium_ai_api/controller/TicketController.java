@@ -43,6 +43,18 @@ public class TicketController {
 
     }
 
+    @GetMapping("{id}")
+    private ResponseEntity<TicketResponseDTO> getById(
+            Authentication auth,
+            @PathVariable Long id){
+
+        var usuario = (Usuario) auth.getPrincipal();
+
+        Ticket ticket = service.getById(id, usuario);
+
+        return ResponseEntity.ok(new TicketResponseDTO(ticket));
+    }
+
     @GetMapping("my-tickets")
     private ResponseEntity<List<TicketGetAllResponseDTO>> getAll(
             Authentication auth,
