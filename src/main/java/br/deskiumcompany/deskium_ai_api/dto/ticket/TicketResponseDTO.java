@@ -53,10 +53,11 @@ public class TicketResponseDTO {
         this.subStatus = new SubStatusDTO(ticket.getSubStatus());
         this.prioridade = ticket.getPrioridade();
 
-        this.acoes = new ArrayList<>();
-        for (Acao acao : ticket.getAcoes()){
-            this.acoes.add(new AcaoResponseDTO(acao));
+        if(ticket.getAcoes() != null && !ticket.getAcoes().isEmpty()){
+            this.acoes = new ArrayList<>();
+            for (Acao acao : ticket.getAcoes()){
+                this.acoes.add(new AcaoResponseDTO(acao));
+            }
         }
-
     }
 }

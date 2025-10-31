@@ -54,6 +54,7 @@ public class TicketService {
 
         var acao = ticket.getAcoes().getFirst();
         acao.setTextoPuro(acaoService.extractTextFromHTML(acao.getHtml()));
+        acao.setHtml(acaoService.formatHtml(acao.getHtml()));
         acao.setTicket(ticket);
 
         if(acao.getAnexos() != null && !acao.getAnexos().isEmpty()){

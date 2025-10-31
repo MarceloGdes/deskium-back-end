@@ -2,6 +2,7 @@ package br.deskiumcompany.deskium_ai_api.dto.acao;
 
 import br.deskiumcompany.deskium_ai_api.domain.Acao;
 import br.deskiumcompany.deskium_ai_api.domain.enums.OrigemAcao;
+import br.deskiumcompany.deskium_ai_api.dto.arquivo.ArquivoDTO;
 import lombok.AllArgsConstructor;
 import lombok.Data;
 import lombok.NoArgsConstructor;
@@ -9,6 +10,8 @@ import lombok.NoArgsConstructor;
 import java.time.LocalDate;
 import java.time.LocalDateTime;
 import java.time.LocalTime;
+import java.util.ArrayList;
+import java.util.List;
 
 @Data
 @AllArgsConstructor
@@ -23,6 +26,7 @@ public class AcaoResponseDTO {
     private String autor;
     private String html;
     private OrigemAcao origemAcao;
+    private List<ArquivoDTO> anexos;
 
 
     public AcaoResponseDTO(Acao acao) {
@@ -35,5 +39,13 @@ public class AcaoResponseDTO {
         this.autor = acao.getUsuarioAutor().getNomeCompleto();
         this.html = acao.getHtml();
         this.origemAcao = acao.getOrigemAcao();
+
+        if(acao.getAnexos() != null &&!acao.getAnexos().isEmpty()){
+            this.anexos = new ArrayList<>();
+            acao.getAnexos().forEach(a -> {
+                this.anexos.add(new ArquivoDTO(a.getFileName()));
+            });
+        }
+
     }
 }

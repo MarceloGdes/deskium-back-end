@@ -46,7 +46,5 @@ public interface TicketRespository extends JpaRepository<Ticket, Long> {
             @Param("motivoId")Long motivoId,
             @Param("categoriaId")Long categoriaId);
 
-    List<Ticket> findByTituloIgnoreCase(String titulo);
-
     Optional<Ticket> findByIdAndSolicitanteUsuarioId(Long ticketId, Long usuarioId);
 }
