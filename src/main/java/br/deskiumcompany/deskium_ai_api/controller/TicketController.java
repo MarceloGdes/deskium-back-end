@@ -1,14 +1,20 @@
 package br.deskiumcompany.deskium_ai_api.controller;
 
+import br.deskiumcompany.deskium_ai_api.domain.Acao;
 import br.deskiumcompany.deskium_ai_api.domain.Ticket;
 import br.deskiumcompany.deskium_ai_api.domain.Usuario;
+import br.deskiumcompany.deskium_ai_api.domain.enums.OrigemAcao;
 import br.deskiumcompany.deskium_ai_api.domain.enums.Status;
 import br.deskiumcompany.deskium_ai_api.domain.enums.SubStatus;
+import br.deskiumcompany.deskium_ai_api.dto.acao.AcaoInsertDTO;
 import br.deskiumcompany.deskium_ai_api.dto.ticket.TicketGetAllResponseDTO;
 import br.deskiumcompany.deskium_ai_api.dto.ticket.TicketInsertDTO;
 import br.deskiumcompany.deskium_ai_api.dto.ticket.TicketResponseDTO;
 import br.deskiumcompany.deskium_ai_api.exception.BussinesException;
+import br.deskiumcompany.deskium_ai_api.service.AcaoService;
+import br.deskiumcompany.deskium_ai_api.service.ArquivosService;
 import br.deskiumcompany.deskium_ai_api.service.TicketService;
+import com.google.api.client.http.HttpStatusCodes;
 import jakarta.validation.Valid;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.ResponseEntity;
@@ -16,6 +22,7 @@ import org.springframework.security.core.Authentication;
 import org.springframework.web.bind.annotation.*;
 import org.springframework.web.util.UriComponentsBuilder;
 
+import java.io.IOException;
 import java.net.URI;
 import java.util.ArrayList;
 import java.util.List;
@@ -27,20 +34,27 @@ public class TicketController {
     @Autowired
     private TicketService service;
 
+    @Autowired
+    private AcaoService acaoService;
+
+    @Autowired
+    private ArquivosService arquivosService;
+
     //O Spring injeta  o objeto Authentication na requisição, pois no meu Security Filter, a authenticação foi setada no contexto da requisição.
     //Nessa autenticação, o usuário já foi carregado previamente.
     @PostMapping
-    private ResponseEntity<TicketResponseDTO> create(@RequestBody @Valid TicketInsertDTO dto,
-                                                     Authentication authentication,
-                                                     UriComponentsBuilder builder) throws BussinesException {
+    private ResponseEntity<TicketResponseDTO> create(
+            @RequestBody @Valid TicketInsertDTO dto,
+            Authentication authentication,
+            UriComponentsBuilder builder
+    ) throws BussinesException, IOException {
 
         var usuario = (Usuario) authentication.getPrincipal();
-        var ticket = service.insert(new Ticket(dto, usuario));
+        var ticket = service.insert(new Ticket(dto, usuario, OrigemAcao.SISTEMA));
         var response = new TicketResponseDTO(ticket);
 
         URI uri = builder.path("/tickets/{id}").buildAndExpand(response.getId()).toUri();
         return ResponseEntity.created(uri).body(response);
-
     }
 
     @GetMapping("{id}")
@@ -49,7 +63,6 @@ public class TicketController {
             @PathVariable Long id){
 
         var usuario = (Usuario) auth.getPrincipal();
-
         Ticket ticket = service.getById(id, usuario);
 
         return ResponseEntity.ok(new TicketResponseDTO(ticket));
@@ -65,7 +78,8 @@ public class TicketController {
             @RequestParam(value = "responsavel", required = false, defaultValue = "") String suporte,
             @RequestParam(value = "subStatus", required = false) SubStatus subStatus,
             @RequestParam(value = "motivoId", required = false) Long motivoId,
-            @RequestParam(value = "categoriaId", required = false) Long categoriaId){
+            @RequestParam(value = "categoriaId", required = false) Long categoriaId
+    ){
 
         var usuario = (Usuario) auth.getPrincipal();
         List<Ticket> tickets = service.getAllTickts(usuario, status, ticketId, assunto, suporte,
@@ -78,5 +92,20 @@ public class TicketController {
         });
 
         return ResponseEntity.ok(ticketsResponse);
+    }
+
+    @PostMapping("{id}/acoes")
+    public ResponseEntity addAcao(
+            @PathVariable("id") Long ticketId,
+            Authentication auth,
+            @RequestBody @Valid AcaoInsertDTO dto
+    ) throws BussinesException {
+        var usuario = (Usuario) auth.getPrincipal();
+        var ticket = service.getById(ticketId, usuario);
+        var acao = new Acao(ticket, usuario, dto, OrigemAcao.SISTEMA);
+        acaoService.addAcao(acao);
+
+        //Não tem URI de consulta apenas para uma Ação.
+        return ResponseEntity.status(HttpStatusCodes.STATUS_CODE_CREATED).build();
     }
 }

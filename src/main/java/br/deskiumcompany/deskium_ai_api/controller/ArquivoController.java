@@ -27,7 +27,10 @@ public class ArquivoController {
     //MultipartFile é uma interface usada para representar um arquivo enviado via upload (multipart/form-data) em uma requisição HTTP
     //Spring recebe esse arquivo e faz o gerenciamento.
     @PostMapping()
-    public ResponseEntity upload(@RequestParam("file") List<MultipartFile> files, UriComponentsBuilder builder) throws IOException, BussinesException {
+    public ResponseEntity upload(
+            @RequestParam("files") List<MultipartFile> files,
+            UriComponentsBuilder builder
+    ) throws IOException, BussinesException {
         var fileNames = service.saveFiles(files);
 
         List<ArquivoDTO> arquivosDTO = new ArrayList<>();

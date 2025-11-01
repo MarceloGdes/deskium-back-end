@@ -9,7 +9,6 @@ import lombok.NoArgsConstructor;
 @AllArgsConstructor
 @NoArgsConstructor
 public class ArquivoDTO {
-
     @NotBlank
     private String fileName;
 }

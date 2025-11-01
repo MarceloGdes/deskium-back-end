@@ -11,7 +11,6 @@ import java.nio.file.Path;
 import java.nio.file.Paths;
 import java.nio.file.StandardCopyOption;
 import java.util.ArrayList;
-import java.util.Base64;
 import java.util.List;
 import java.util.UUID;
 
@@ -47,19 +46,11 @@ public class ArquivosService {
         return fileNames;
     }
 
-    private String salvarImagemBase64(String base64) throws IOException {
-        //Divide o base 64
-        String[] partes = base64.split(",");
-        String mime = partes[0].split(";")[0].split(":")[1];
-        String extensao = mime.split("/")[1];
-        byte[] dados = Base64.getDecoder().decode(partes[1]);
-
-        String fileName = UUID.randomUUID() + "." + extensao;
-        Path destino = Paths.get(uploadDir + fileName);
-        Files.createDirectories(destino.getParent());
-        Files.write(destino, dados);
-
-        return fileName;
+    //Quando der algum erro ou exceção no momento de salvar o ticket e ações, precisamos deletar o que previamente
+    // foi armazenado
+    public void deleteFileByName(String fileName) throws IOException {
+        Path path = Paths.get(uploadDir);
+        Files.deleteIfExists(path.resolve(fileName));
     }
 
     public boolean existsByFileName(String fileName){

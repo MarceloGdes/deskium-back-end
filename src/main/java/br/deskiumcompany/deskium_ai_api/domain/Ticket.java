@@ -60,7 +60,7 @@ public class Ticket extends EntidadeBase{
     @OneToMany(mappedBy = "ticket", cascade = CascadeType.ALL)
     private List<Acao> acoes;
 
-    public Ticket(TicketInsertDTO dto, Usuario usuario) {
+    public Ticket(TicketInsertDTO dto, Usuario usuario, OrigemAcao origemAcao) {
         this.titulo = dto.getTitulo();
         this.status = Status.ABERTO;
 
@@ -83,7 +83,7 @@ public class Ticket extends EntidadeBase{
         Acao acao = new Acao();
         acao.setAcaoInterna(false);
         acao.setNumAcao(1);
-        acao.setOrigemAcao(OrigemAcao.SISTEMA);
+        acao.setOrigemAcao(origemAcao);
         acao.setHtml(dto.getDescricaoHtml());
         acao.setUsuarioAutor(usuario);
 

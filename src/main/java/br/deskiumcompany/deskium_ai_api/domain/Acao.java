@@ -1,6 +1,9 @@
 package br.deskiumcompany.deskium_ai_api.domain;
 
 import br.deskiumcompany.deskium_ai_api.domain.enums.OrigemAcao;
+import br.deskiumcompany.deskium_ai_api.domain.enums.TipoUsuario;
+import br.deskiumcompany.deskium_ai_api.dto.acao.AcaoInsertDTO;
+import br.deskiumcompany.deskium_ai_api.dto.arquivo.ArquivoDTO;
 import jakarta.persistence.*;
 import lombok.AllArgsConstructor;
 import lombok.Data;
@@ -8,6 +11,7 @@ import lombok.NoArgsConstructor;
 
 import java.time.LocalDate;
 import java.time.LocalTime;
+import java.util.ArrayList;
 import java.util.List;
 
 @Entity
@@ -50,4 +54,24 @@ public class Acao extends EntidadeBase {
 
     @OneToMany(mappedBy = "acao", cascade = CascadeType.ALL)
     private List<Anexo> anexos;
+
+    public Acao(Ticket ticket, Usuario usuario, AcaoInsertDTO dto, OrigemAcao origemAcao) {
+        this.ticket = ticket;
+        this.usuarioAutor = usuario;
+        this.acaoInterna = usuario.getTipoUsuario() == TipoUsuario.SOLICITANTE
+                ? false
+                : dto.isAcaoInterna();
+        this.html = dto.getHtml();
+        this.origemAcao = origemAcao;
+
+        if(dto.getAnexos() != null && !dto.getAnexos().isEmpty()){
+            this.anexos = new ArrayList<>();
+
+            for (ArquivoDTO arquivoDTO : dto.getAnexos()){
+                Anexo anexo = new Anexo();
+                anexo.setFileName(arquivoDTO.getFileName());
+                this.anexos.add(anexo);
+            }
+        }
+    }
 }
