@@ -58,6 +58,7 @@ public class Ticket extends EntidadeBase{
     private Prioridade prioridade;
 
     @OneToMany(mappedBy = "ticket", cascade = CascadeType.ALL)
+    @OrderBy("numAcao DESC") //Ordena a lista de ações de forma decrescente
     private List<Acao> acoes;
 
     public Ticket(TicketInsertDTO dto, Usuario usuario, OrigemAcao origemAcao) {
