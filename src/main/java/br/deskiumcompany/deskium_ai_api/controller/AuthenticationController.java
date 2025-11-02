@@ -1,7 +1,7 @@
 package br.deskiumcompany.deskium_ai_api.controller;
 
 import br.deskiumcompany.deskium_ai_api.domain.Usuario;
-import br.deskiumcompany.deskium_ai_api.dto.UsuarioDTO;
+import br.deskiumcompany.deskium_ai_api.dto.usuario.UsuarioDTO;
 import br.deskiumcompany.deskium_ai_api.dto.auth.AuthenticationDTO;
 import br.deskiumcompany.deskium_ai_api.dto.auth.LoginResponseDto;
 import br.deskiumcompany.deskium_ai_api.infra.security.JwtService;

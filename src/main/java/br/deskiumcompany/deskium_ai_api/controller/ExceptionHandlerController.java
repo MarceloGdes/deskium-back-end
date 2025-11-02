@@ -13,6 +13,7 @@ import org.springframework.web.bind.annotation.ExceptionHandler;
 import org.springframework.web.method.annotation.MethodArgumentTypeMismatchException;
 import org.springframework.web.multipart.MaxUploadSizeExceededException;
 
+import java.io.FileNotFoundException;
 import java.util.ArrayList;
 import java.util.List;
 
@@ -74,5 +75,13 @@ public class ExceptionHandlerController {
         ApiExceptionDTO apiExceptionDTO = new ApiExceptionDTO("Parametro '" + e.getParameter().getParameterName() + "' preenchido incorretamente. Verifique.");
 
         return ResponseEntity.badRequest().body(apiExceptionDTO);
+    }
+
+    @ExceptionHandler(FileNotFoundException.class)
+    public ResponseEntity<ApiExceptionDTO> handleFileNotFoundException(FileNotFoundException e){
+        ApiExceptionDTO apiExceptionDTO = new ApiExceptionDTO(e.getMessage());
+
+        //notFound do response entity não aceita body.
+        return ResponseEntity.status(HttpStatus.NOT_FOUND).body(apiExceptionDTO);
     }
 }

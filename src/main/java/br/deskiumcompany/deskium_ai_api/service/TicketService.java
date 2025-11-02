@@ -35,6 +35,9 @@ public class TicketService {
     @Autowired
     private AcaoService acaoService;
 
+    @Autowired
+    private ArquivosService arquivosService;
+
     public Ticket insert(Ticket ticket) throws BussinesException{
         var solicitante = ticket.getSolicitante();
         solicitante = solicitanteService.getByUsuarioId(solicitante.getUsuario().getId());
@@ -59,7 +62,7 @@ public class TicketService {
 
         if(acao.getAnexos() != null && !acao.getAnexos().isEmpty()){
             for (Anexo anexo : acao.getAnexos()) {
-                if (acaoService.arquivoExistsByFileName(anexo.getFileName())) {
+                if (arquivosService.existsByFileName(anexo.getFileName())) {
                     anexo.setAcao(acao);
                 } else {
                     throw new BussinesException("o arquivo: " + anexo.getFileName() + " não existe. Faça upload novamente.");

@@ -12,7 +12,6 @@ import br.deskiumcompany.deskium_ai_api.dto.ticket.TicketInsertDTO;
 import br.deskiumcompany.deskium_ai_api.dto.ticket.TicketResponseDTO;
 import br.deskiumcompany.deskium_ai_api.exception.BussinesException;
 import br.deskiumcompany.deskium_ai_api.service.AcaoService;
-import br.deskiumcompany.deskium_ai_api.service.ArquivosService;
 import br.deskiumcompany.deskium_ai_api.service.TicketService;
 import com.google.api.client.http.HttpStatusCodes;
 import jakarta.validation.Valid;
@@ -36,9 +35,6 @@ public class TicketController {
 
     @Autowired
     private AcaoService acaoService;
-
-    @Autowired
-    private ArquivosService arquivosService;
 
     //O Spring injeta  o objeto Authentication na requisição, pois no meu Security Filter, a authenticação foi setada no contexto da requisição.
     //Nessa autenticação, o usuário já foi carregado previamente.

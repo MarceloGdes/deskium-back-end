@@ -34,7 +34,7 @@ public class AcaoService {
 
         if(acao.getAnexos() != null && !acao.getAnexos().isEmpty()){
             for (Anexo anexo : acao.getAnexos()) {
-                if (arquivoExistsByFileName(anexo.getFileName())) {
+                if (arquivosService.existsByFileName(anexo.getFileName())) {
                     anexo.setAcao(acao);
                 } else {
                     throw new BussinesException("o arquivo: " + anexo.getFileName() + " não existe. Faça upload novamente.");
@@ -43,10 +43,6 @@ public class AcaoService {
         }
 
         repository.save(acao);
-    }
-
-    protected boolean arquivoExistsByFileName(String fileName){
-        return arquivosService.existsByFileName(fileName);
     }
 
     protected String extractTextFromHTML(String html){

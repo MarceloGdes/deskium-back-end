@@ -3,6 +3,7 @@ package br.deskiumcompany.deskium_ai_api.dto.acao;
 import br.deskiumcompany.deskium_ai_api.domain.Acao;
 import br.deskiumcompany.deskium_ai_api.domain.enums.OrigemAcao;
 import br.deskiumcompany.deskium_ai_api.dto.arquivo.ArquivoDTO;
+import br.deskiumcompany.deskium_ai_api.dto.usuario.UsuarioDTO;
 import lombok.AllArgsConstructor;
 import lombok.Data;
 import lombok.NoArgsConstructor;
@@ -23,7 +24,7 @@ public class AcaoResponseDTO {
     private LocalDate dataAtendimento;
     private LocalTime inicioAtendimento;
     private LocalTime fimAtendimento;
-    private String autor;
+    private UsuarioDTO autor;
     private String html;
     private OrigemAcao origemAcao;
     private List<ArquivoDTO> anexos;
@@ -36,7 +37,7 @@ public class AcaoResponseDTO {
         this.dataAtendimento = acao.getDataAtendimento();
         this.inicioAtendimento = acao.getInicioAtendimento();
         this.fimAtendimento = acao.getFimAtendimento();
-        this.autor = acao.getUsuarioAutor().getNomeCompleto();
+        this.autor = new UsuarioDTO(acao.getUsuarioAutor());
         this.html = acao.getHtml();
         this.origemAcao = acao.getOrigemAcao();
 

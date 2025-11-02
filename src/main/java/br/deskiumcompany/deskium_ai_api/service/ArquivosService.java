@@ -5,6 +5,8 @@ import org.springframework.beans.factory.annotation.Value;
 import org.springframework.stereotype.Service;
 import org.springframework.web.multipart.MultipartFile;
 
+import java.io.File;
+import java.io.FileNotFoundException;
 import java.io.IOException;
 import java.nio.file.Files;
 import java.nio.file.Path;
@@ -53,7 +55,14 @@ public class ArquivosService {
         Files.deleteIfExists(path.resolve(fileName));
     }
 
-    public boolean existsByFileName(String fileName){
+    protected boolean existsByFileName(String fileName){
         return Files.exists(Paths.get(uploadDir, fileName));
+    }
+
+    public File getFileByFileName(String fileName) throws FileNotFoundException {
+        if(!existsByFileName(fileName))
+            throw new FileNotFoundException("Arquivo " + fileName + " não encontrado");
+
+        return new File(Paths.get(uploadDir, fileName).toUri());
     }
 }

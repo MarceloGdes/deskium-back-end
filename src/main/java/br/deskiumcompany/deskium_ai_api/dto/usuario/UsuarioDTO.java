@@ -1,4 +1,4 @@
-package br.deskiumcompany.deskium_ai_api.dto;
+package br.deskiumcompany.deskium_ai_api.dto.usuario;
 
 import br.deskiumcompany.deskium_ai_api.domain.Usuario;
 import br.deskiumcompany.deskium_ai_api.domain.enums.TipoUsuario;
