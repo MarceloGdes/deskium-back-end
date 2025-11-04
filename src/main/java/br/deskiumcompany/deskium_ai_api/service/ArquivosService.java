@@ -35,7 +35,7 @@ public class ArquivosService {
         }
 
         for(MultipartFile file : files){
-            //Criando filePath de destiono e copiando o arquivo.
+            //Criando filePath de destione e copiando o arquivo.
             String fileName = UUID.randomUUID() + "_" +  file.getOriginalFilename()
                     .replace(" ", "-");
             Path filePath = uploadsPath.resolve(fileName);

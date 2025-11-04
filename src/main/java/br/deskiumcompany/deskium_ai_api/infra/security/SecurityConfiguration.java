@@ -39,6 +39,7 @@ public class SecurityConfiguration {
                 //definindo regra de roles onde cada usuário podeira acessar ou não
                 .authorizeHttpRequests(authorize -> authorize
                         .requestMatchers(HttpMethod.POST, "/auth/login").permitAll()
+                        .requestMatchers(HttpMethod.GET, "/arquivos/{fileName}").permitAll()
                         .requestMatchers(HttpMethod.POST, "/empresas").hasAnyRole(TipoUsuario.SUPORTE.name())
                         .requestMatchers(HttpMethod.GET, "/solicitantes/me").hasAnyRole(TipoUsuario.SOLICITANTE.name())
                         .requestMatchers(HttpMethod.POST, "/tickets").hasAnyRole(TipoUsuario.SOLICITANTE.name())
