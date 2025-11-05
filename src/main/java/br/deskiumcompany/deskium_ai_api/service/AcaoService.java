@@ -2,6 +2,7 @@ package br.deskiumcompany.deskium_ai_api.service;
 
 import br.deskiumcompany.deskium_ai_api.domain.Acao;
 import br.deskiumcompany.deskium_ai_api.domain.Anexo;
+import br.deskiumcompany.deskium_ai_api.domain.enums.Status;
 import br.deskiumcompany.deskium_ai_api.exception.BussinesException;
 import br.deskiumcompany.deskium_ai_api.respository.AcaoRepository;
 import org.jsoup.Jsoup;
@@ -21,6 +22,9 @@ public class AcaoService {
     //TODO: utilizar o clean do Jsoup aumentando a securaça contra ataques XSS (tags html que executam scripts)
 
     public void addAcao(Acao acao) throws BussinesException {
+        if(!acao.getTicket().getStatus().equals(Status.ABERTO))
+            throw new BussinesException("O ticket " + acao.getTicket().getId() + " não está aberto.");
+
         if(acao.getUsuarioAutor().getId() != acao.getTicket().getSolicitante().getUsuario().getId() &&
                 acao.getUsuarioAutor().getId() != acao.getTicket().getSuporte().getUsuario().getId())
             throw new BussinesException("Usuário sem acesso a adições de ações nesse ticket");
