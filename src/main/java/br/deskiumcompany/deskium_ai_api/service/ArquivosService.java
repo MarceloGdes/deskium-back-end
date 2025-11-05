@@ -30,8 +30,17 @@ public class ArquivosService {
         }
 
         for(MultipartFile file : files){
-            if(file.isEmpty())
+            if(file == null || file.isEmpty())
                 throw new BussinesException("Um dos arquivos não foi enviado corretamente. Verifique.");
+
+            var contentType = file.getContentType();
+            if( !(contentType.equals("application/pdf") ||
+                    contentType.equals("image/jpeg") ||
+                    contentType.equals("image/png") ||
+                    contentType.equals("audio/mpeg"))){
+
+                throw new BussinesException("Arquivo " + file.getOriginalFilename() + " não é um tipo permitido");
+            }
         }
 
         for(MultipartFile file : files){
@@ -48,8 +57,6 @@ public class ArquivosService {
         return fileNames;
     }
 
-    //Quando der algum erro ou exceção no momento de salvar o ticket e ações, precisamos deletar o que previamente
-    // foi armazenado
     public void deleteFileByName(String fileName) throws IOException {
         Path path = Paths.get(uploadDir);
         Files.deleteIfExists(path.resolve(fileName));
