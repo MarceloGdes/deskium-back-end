@@ -64,7 +64,7 @@ public class TicketController {
         return ResponseEntity.ok(new TicketResponseDTO(ticket));
     }
 
-    @GetMapping("my-tickets")
+    @GetMapping()
     private ResponseEntity<List<TicketGetAllResponseDTO>> getAll(
             Authentication auth,
             @RequestParam(value = "status", required = false) Status status,
@@ -72,14 +72,16 @@ public class TicketController {
             //declarando o default value, pois quando a string é nula, acaba estourando erro no banco de dados.
             @RequestParam(value = "assunto", required = false, defaultValue = "") String assunto,
             @RequestParam(value = "responsavel", required = false, defaultValue = "") String suporte,
+            @RequestParam(value = "solicitante", required = false, defaultValue = "") String solicitante,
             @RequestParam(value = "subStatus", required = false) SubStatus subStatus,
             @RequestParam(value = "motivoId", required = false) Long motivoId,
-            @RequestParam(value = "categoriaId", required = false) Long categoriaId
+            @RequestParam(value = "categoriaId", required = false) Long categoriaId,
+            @RequestParam(value = "allTickets", required = false, defaultValue = "true") boolean allTickets
     ){
 
         var usuario = (Usuario) auth.getPrincipal();
-        List<Ticket> tickets = service.getAllTickts(usuario, status, ticketId, assunto, suporte,
-                subStatus, motivoId, categoriaId);
+        List<Ticket> tickets = service.getAllTickts(usuario, status, ticketId, assunto, suporte, solicitante,
+                subStatus, motivoId, categoriaId, allTickets);
 
         List<TicketGetAllResponseDTO> ticketsResponse = new ArrayList<>();
 

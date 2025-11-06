@@ -74,12 +74,24 @@ public class TicketService {
     }
 
     public List<Ticket> getAllTickts(Usuario usuario, Status status, Long ticketId,
-                                     String assunto, String suporte, SubStatus subStatus,
-                                     Long motivoId, Long categoriaId) {
+                                     String assunto, String suporte, String solicitante, SubStatus subStatus,
+                                     Long motivoId, Long categoriaId, boolean allTickets) {
 
-        return respository.findAllBySolicitante(usuario, status, ticketId, assunto, suporte,
-                        subStatus, motivoId, categoriaId);
+        //Se for solicitante, retorna apenas os tickets dele.
+        if(usuario.getTipoUsuario().equals(TipoUsuario.SOLICITANTE)){
+            return respository.findAll(usuario, status, ticketId, assunto, suporte,
+                    subStatus, motivoId, categoriaId, "");
 
+        //Se não for, ele é suporte. Caso a flag allTickets seja true, retorna todos os tickets de todos os usuários.
+        }else if(allTickets){
+            return respository.findAll(null, status, ticketId, assunto, suporte,
+                    subStatus, motivoId, categoriaId, solicitante);
+
+        //se for falso, retorno os tickets do suporte
+        }else {
+            return respository.findAll(usuario, status, ticketId, assunto, "",
+                    subStatus, motivoId, categoriaId, solicitante);
+        }
     }
 
     public Ticket getById(Long id, Usuario usuario){
