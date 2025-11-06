@@ -76,7 +76,7 @@ public class TicketController {
             @RequestParam(value = "subStatus", required = false) SubStatus subStatus,
             @RequestParam(value = "motivoId", required = false) Long motivoId,
             @RequestParam(value = "categoriaId", required = false) Long categoriaId,
-            @RequestParam(value = "allTickets", required = false, defaultValue = "true") boolean allTickets
+            @RequestParam(value = "allTickets", required = true) boolean allTickets
     ){
 
         var usuario = (Usuario) auth.getPrincipal();
