@@ -8,6 +8,7 @@ import org.springframework.http.ResponseEntity;
 import org.springframework.security.authentication.BadCredentialsException;
 import org.springframework.validation.FieldError;
 import org.springframework.web.bind.MethodArgumentNotValidException;
+import org.springframework.web.bind.MissingServletRequestParameterException;
 import org.springframework.web.bind.annotation.ControllerAdvice;
 import org.springframework.web.bind.annotation.ExceptionHandler;
 import org.springframework.web.method.annotation.MethodArgumentTypeMismatchException;
@@ -70,9 +71,18 @@ public class ExceptionHandlerController {
         return ResponseEntity.badRequest().body(apiExceptionDTO);
     }
 
+    //Parametro form-data
     @ExceptionHandler(MethodArgumentTypeMismatchException.class)
     public ResponseEntity<ApiExceptionDTO> handleMethodArgumentTypeMismatchException(MethodArgumentTypeMismatchException e){
         ApiExceptionDTO apiExceptionDTO = new ApiExceptionDTO("Parametro '" + e.getParameter().getParameterName() + "' preenchido incorretamente. Verifique.");
+
+        return ResponseEntity.badRequest().body(apiExceptionDTO);
+    }
+
+    //PathVariable
+    @ExceptionHandler(MissingServletRequestParameterException.class)
+    public ResponseEntity<ApiExceptionDTO> handleMissingServletRequestParameterException(MissingServletRequestParameterException e){
+        ApiExceptionDTO apiExceptionDTO = new ApiExceptionDTO("Variavel '" + e.getParameterName() + "' obrigatória não preenchido. Verifique.");
 
         return ResponseEntity.badRequest().body(apiExceptionDTO);
     }

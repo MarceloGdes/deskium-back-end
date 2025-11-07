@@ -23,6 +23,7 @@ import org.springframework.web.util.UriComponentsBuilder;
 
 import java.io.IOException;
 import java.net.URI;
+import java.time.LocalDateTime;
 import java.util.ArrayList;
 import java.util.List;
 
@@ -76,12 +77,17 @@ public class TicketController {
             @RequestParam(value = "subStatus", required = false) SubStatus subStatus,
             @RequestParam(value = "motivoId", required = false) Long motivoId,
             @RequestParam(value = "categoriaId", required = false) Long categoriaId,
-            @RequestParam(value = "allTickets", required = true) boolean allTickets
-    ){
+            @RequestParam(value = "allTickets", required = true) boolean allTickets,
+            @RequestParam(value = "dataAberturaInicio", required = false)LocalDateTime dataAberturaInicio,
+            @RequestParam(value = "dataAberturaFim", required = false)LocalDateTime dataAberturaFim,
+            @RequestParam(value = "dataFechamentoInicio", required = false)LocalDateTime dataFechamentoInicio,
+            @RequestParam(value = "dataFechamentoFim", required = false)LocalDateTime dataFechamentoFim
+            ){
 
         var usuario = (Usuario) auth.getPrincipal();
-        List<Ticket> tickets = service.getAllTickts(usuario, status, ticketId, assunto, suporte, solicitante,
-                subStatus, motivoId, categoriaId, allTickets);
+        List<Ticket> tickets = service.getAllTickts(usuario, status, ticketId, assunto,
+                suporte, solicitante, subStatus, motivoId, categoriaId, dataAberturaInicio,
+                dataAberturaFim, dataFechamentoInicio, dataFechamentoFim, allTickets);
 
         List<TicketGetAllResponseDTO> ticketsResponse = new ArrayList<>();
 

@@ -12,6 +12,7 @@ import jakarta.persistence.EntityNotFoundException;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
+import java.time.LocalDateTime;
 import java.util.List;
 
 @Service
@@ -73,24 +74,29 @@ public class TicketService {
         return respository.save(ticket);
     }
 
-    public List<Ticket> getAllTickts(Usuario usuario, Status status, Long ticketId,
-                                     String assunto, String suporte, String solicitante, SubStatus subStatus,
-                                     Long motivoId, Long categoriaId, boolean allTickets) {
+    public List<Ticket> getAllTickts(
+            Usuario usuario, Status status, Long ticketId,
+            String assunto, String suporte, String solicitante, SubStatus subStatus,
+            Long motivoId, Long categoriaId, LocalDateTime dataAberturaInicio,
+            LocalDateTime dataAberturaFim, LocalDateTime dataFechamentoInicio,
+            LocalDateTime dataFechamentoFim, boolean allTickets
+    ) {
 
         //Se for solicitante, retorna apenas os tickets dele.
         if(usuario.getTipoUsuario().equals(TipoUsuario.SOLICITANTE)){
             return respository.findAll(usuario, status, ticketId, assunto, suporte,
-                    subStatus, motivoId, categoriaId, "");
+                    subStatus, motivoId, categoriaId, "", dataAberturaInicio, dataAberturaFim,
+                    dataFechamentoInicio, dataFechamentoFim);
 
         //Se não for, ele é suporte. Caso a flag allTickets seja true, retorna todos os tickets de todos os usuários.
         }else if(allTickets){
             return respository.findAll(null, status, ticketId, assunto, suporte,
-                    subStatus, motivoId, categoriaId, solicitante);
+                    subStatus, motivoId, categoriaId, solicitante, dataAberturaInicio, dataAberturaFim, dataFechamentoInicio, dataFechamentoFim);
 
         //se for falso, retorno os tickets do suporte
         }else {
             return respository.findAll(usuario, status, ticketId, assunto, "",
-                    subStatus, motivoId, categoriaId, solicitante);
+                    subStatus, motivoId, categoriaId, solicitante, dataAberturaInicio, dataAberturaFim, dataFechamentoInicio, dataFechamentoFim);
         }
     }
 

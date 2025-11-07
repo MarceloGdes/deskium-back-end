@@ -9,6 +9,7 @@ import org.springframework.data.jpa.repository.Query;
 import org.springframework.data.repository.query.Param;
 import org.springframework.stereotype.Repository;
 
+import java.time.LocalDateTime;
 import java.util.List;
 import java.util.Optional;
 
@@ -51,7 +52,11 @@ public interface TicketRespository extends JpaRepository<Ticket, Long> {
             @Param("subStatus")SubStatus subStatus,
             @Param("motivoId")Long motivoId,
             @Param("categoriaId")Long categoriaId,
-            @Param("solicitanteNome") String solicitanteNome);
+            @Param("solicitanteNome") String solicitanteNome,
+            @Param("dataAberturaInicio") LocalDateTime dataAberturaInicio,
+            @Param("dataAberturaFim") LocalDateTime dataAberturaFim,
+            @Param("dataFechamentoInicio") LocalDateTime dataFechamentoInicio,
+            @Param("dataFechamentoFim") LocalDateTime dataFechamentoFim);
 
     Optional<Ticket> findByIdAndSolicitanteUsuarioId(Long ticketId, Long usuarioId);
 }
