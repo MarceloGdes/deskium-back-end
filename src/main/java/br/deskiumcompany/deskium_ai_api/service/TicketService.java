@@ -85,8 +85,8 @@ public class TicketService {
         //Se for solicitante, retorna apenas os tickets dele.
         if(usuario.getTipoUsuario().equals(TipoUsuario.SOLICITANTE)){
             return respository.findAll(usuario, status, ticketId, assunto, suporte,
-                    subStatus, motivoId, categoriaId, "", dataAberturaInicio, dataAberturaFim,
-                    dataFechamentoInicio, dataFechamentoFim);
+                    subStatus, motivoId, categoriaId, "", dataAberturaInicio,
+                    dataAberturaFim, dataFechamentoInicio, dataFechamentoFim);
 
         //Se não for, ele é suporte. Caso a flag allTickets seja true, retorna todos os tickets de todos os usuários.
         }else if(allTickets){

@@ -41,7 +41,7 @@ public class SecurityFilter extends OncePerRequestFilter {
                //Validando as informações do ROLE
                var authentication = new UsernamePasswordAuthenticationToken(user, null, user.getAuthorities());
 
-               //Salvo a autenticação no contexto do security, para os próximos filtros e requisições
+               //Salvo a autenticação no contexto do security, para os próximos filtros e controler
                SecurityContextHolder.getContext().setAuthentication(authentication);
             }
             //Vai para o proximo filtro que ira validar a necessidade do token ou não
