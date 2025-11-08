@@ -80,7 +80,10 @@ public class TicketService {
             Long motivoId, Long categoriaId, LocalDateTime dataAberturaInicio,
             LocalDateTime dataAberturaFim, LocalDateTime dataFechamentoInicio,
             LocalDateTime dataFechamentoFim, boolean allTickets
-    ) {
+
+    ) throws BussinesException {
+        validateDatas(dataAberturaInicio, dataAberturaFim, "data de abertura");
+        validateDatas(dataFechamentoInicio, dataFechamentoFim, "data de fechamento");
 
         //Se for solicitante, retorna apenas os tickets dele.
         if(usuario.getTipoUsuario().equals(TipoUsuario.SOLICITANTE)){
@@ -108,6 +111,18 @@ public class TicketService {
         }else {
             return respository.findById(id)
                     .orElseThrow(() -> new EntityNotFoundException("Ticket não encontrado."));
+        }
+    }
+
+    private void validateDatas(LocalDateTime dataInicial, LocalDateTime dataFinal, String dataDescricao) throws BussinesException {
+        if (dataInicial != null || dataFinal != null){
+            if(dataInicial == null || dataFinal == null)
+                throw new BussinesException("Você deve preencher o período inicial e final da " + dataDescricao +", ou deixar " +
+                        "os dois campos em branco.");
+
+            if(dataInicial.isAfter(dataFinal)){
+                throw new BussinesException("A " + dataDescricao + " final deve ser igual ou posterior a " + dataDescricao + " inicial.");
+            }
         }
     }
 }

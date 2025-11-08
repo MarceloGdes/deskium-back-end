@@ -82,7 +82,7 @@ public class TicketController {
             @RequestParam(value = "dataAberturaFim", required = false)LocalDateTime dataAberturaFim,
             @RequestParam(value = "dataFechamentoInicio", required = false)LocalDateTime dataFechamentoInicio,
             @RequestParam(value = "dataFechamentoFim", required = false)LocalDateTime dataFechamentoFim
-            ){
+            ) throws BussinesException {
 
         var usuario = (Usuario) auth.getPrincipal();
         List<Ticket> tickets = service.getAllTickts(usuario, status, ticketId, assunto,
