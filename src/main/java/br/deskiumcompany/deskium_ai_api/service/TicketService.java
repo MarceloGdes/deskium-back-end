@@ -71,6 +71,13 @@ public class TicketService {
             }
         }
 
+        //Todo: criar metodo de calculo.
+//        var horasParaPrimeiraResposta = ticket.getMotivo().getPrazoPrimeiraResposta();
+//        var horasParaResolucao = ticket.getMotivo().getPrazoResolucao();
+//
+//        var dataPrimeiraResposta = ticket.getCriadoEm().plusHours(horasParaPrimeiraResposta);
+
+
         return respository.save(ticket);
     }
 
@@ -113,7 +120,6 @@ public class TicketService {
                     .orElseThrow(() -> new EntityNotFoundException("Ticket não encontrado."));
         }
     }
-
     private void validateDatas(LocalDateTime dataInicial, LocalDateTime dataFinal, String dataDescricao) throws BussinesException {
         if (dataInicial != null || dataFinal != null){
             if(dataInicial == null || dataFinal == null)

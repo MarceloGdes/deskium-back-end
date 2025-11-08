@@ -6,19 +6,15 @@ import lombok.AllArgsConstructor;
 import lombok.Data;
 import lombok.NoArgsConstructor;
 
-import java.time.LocalDateTime;
 import java.time.LocalTime;
 
 @Entity
 @Data
 @AllArgsConstructor
 @NoArgsConstructor
-public class Expediente extends EntidadeBase {
+public class Expediente {
 
     @Id
-    @GeneratedValue(strategy = GenerationType.IDENTITY)
-    private Long id;
-
     @Enumerated(EnumType.STRING)
     @Column(nullable = false, length = 50)
     private DiaSemana diaSemana;
@@ -26,15 +22,11 @@ public class Expediente extends EntidadeBase {
     @Column(nullable = false)
     private boolean expediente;
 
-    @Column(nullable = false)
     private LocalTime inicioManha;
 
-    @Column(nullable = false)
     private LocalTime fimManha;
 
-    @Column(nullable = false)
     private LocalTime inicioTarde;
 
-    @Column(nullable = false)
     private LocalTime fimTarde;
 }

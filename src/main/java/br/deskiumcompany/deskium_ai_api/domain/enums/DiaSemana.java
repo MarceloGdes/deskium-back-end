@@ -1,11 +1,17 @@
 package br.deskiumcompany.deskium_ai_api.domain.enums;
 
 public enum DiaSemana {
-    DOMINGO,
-    SEGUNDA_FEIRA,
-    TERCA_FEIRA,
-    QUARTA_FEIRA,
-    QUINTA_FEIRA,
-    SEXTA_FEIRA,
-    SABADO
+    MONDAY("Segunda-Feira"),
+    TUESDAY("Terça-Feira"),
+    WEDNESDAY("Quarta-Feira"),
+    THURSDAY("Quinta-Feira"),
+    FRIDAY("Sexta-Feira"),
+    SATURDAY("Sabádo"),
+    SUNDAY("Domingo");
+
+    private String descricao;
+
+    DiaSemana(String descricao){
+        this.descricao = descricao;
+    }
 }
