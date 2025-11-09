@@ -30,7 +30,8 @@ public class SecurityConfiguration {
     @Bean
     public SecurityFilterChain securityFilterChain(HttpSecurity httpSecurity) throws Exception{
         return httpSecurity
-                // 1. Desabilita proteção CSRF
+                //Desabilita proteção CSRF
+                //Proteção de request de sites "Falsos". Desabilitado, porque no momento não hhá necessidade.
                 .csrf(csrf -> csrf.disable())
 
                 // define que a authentificação será Stateless ou seja, por token JWT, padrão REST.
@@ -40,9 +41,12 @@ public class SecurityConfiguration {
                 .authorizeHttpRequests(authorize -> authorize
                         .requestMatchers(HttpMethod.POST, "/auth/login").permitAll()
                         .requestMatchers(HttpMethod.GET, "/arquivos/{fileName}").permitAll()
-                        .requestMatchers(HttpMethod.POST, "/empresas").hasAnyRole(TipoUsuario.SUPORTE.name())
+                        .requestMatchers(HttpMethod.POST, "/empresas").hasAnyRole(TipoUsuario.GESTOR_SUPORTE.name())
                         .requestMatchers(HttpMethod.GET, "/solicitantes/me").hasAnyRole(TipoUsuario.SOLICITANTE.name())
+                        .requestMatchers(HttpMethod.POST, "/solicitantes").hasAnyRole(TipoUsuario.GESTOR_SUPORTE.name())
+                        .requestMatchers(HttpMethod.POST, "/suportes").hasAnyRole(TipoUsuario.GESTOR_SUPORTE.name())
                         .requestMatchers(HttpMethod.POST, "/tickets").hasAnyRole(TipoUsuario.SOLICITANTE.name())
+                        .requestMatchers(HttpMethod.PUT, "/tickets/{id}").hasAnyRole(TipoUsuario.SUPORTE.name())
                         .anyRequest().authenticated()
                 )
                 //Tirando bloqueio de CORS - Apenas para dev, em prod deve ser configurado

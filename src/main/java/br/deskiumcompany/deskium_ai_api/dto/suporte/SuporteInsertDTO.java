@@ -1,8 +1,10 @@
 package br.deskiumcompany.deskium_ai_api.dto.suporte;
 
 import br.deskiumcompany.deskium_ai_api.domain.enums.TipoUsuario;
-import com.fasterxml.jackson.databind.annotation.EnumNaming;
-import jakarta.validation.constraints.*;
+import jakarta.validation.constraints.Email;
+import jakarta.validation.constraints.NotBlank;
+import jakarta.validation.constraints.NotNull;
+import jakarta.validation.constraints.Size;
 import lombok.AllArgsConstructor;
 import lombok.Data;
 import lombok.NoArgsConstructor;
@@ -23,7 +25,7 @@ public class SuporteInsertDTO {
     @NotBlank
     private String senha;
 
-    @NotBlank
-    private String tipoUsuarioSuporte;
+    @NotNull
+    private TipoUsuario tipoUsuarioSuporte;
 
 }

@@ -30,7 +30,10 @@ public class Suporte extends EntidadeBase{
             usuario.setSenha(dto.getSenha());
             usuario.setNomeCompleto(dto.getNomeCompleto());
 
-            usuario.setTipoUsuario(TipoUsuario.valueOf(dto.getTipoUsuarioSuporte()));
+            if(dto.getTipoUsuarioSuporte().equals(TipoUsuario.SOLICITANTE))
+                throw new BussinesException("Tipo de usuário incálido para suporte e gestor de suporte.");
+
+            usuario.setTipoUsuario(dto.getTipoUsuarioSuporte());
 
             this.usuario = usuario;
 
