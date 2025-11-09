@@ -86,7 +86,7 @@ public class TicketController {
             ) throws BussinesException {
 
         var usuario = (Usuario) auth.getPrincipal();
-        List<Ticket> tickets = service.getAllTickts(usuario, status, ticketId, assunto,
+        List<Ticket> tickets = service.getAll(usuario, status, ticketId, assunto,
                 suporte, solicitante, subStatus, motivoId, categoriaId, dataAberturaInicio,
                 dataAberturaFim, dataFechamentoInicio, dataFechamentoFim, allTickets);
 

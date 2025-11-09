@@ -85,7 +85,7 @@ public class TicketService {
         return respository.save(ticket);
     }
 
-    public List<Ticket> getAllTickts(
+    public List<Ticket> getAll(
             Usuario usuario, Status status, Long ticketId,
             String assunto, String suporte, String solicitante, SubStatus subStatus,
             Long motivoId, Long categoriaId, LocalDateTime dataAberturaInicio,
@@ -98,9 +98,12 @@ public class TicketService {
 
         //Se for solicitante, retorna apenas os tickets dele.
         if(usuario.getTipoUsuario().equals(TipoUsuario.SOLICITANTE)){
-            return respository.findAll(usuario, status, ticketId, assunto, suporte,
+            var tickets = respository.findAll(usuario, status, ticketId, assunto, suporte,
                     subStatus, motivoId, categoriaId, "", dataAberturaInicio,
                     dataAberturaFim, dataFechamentoInicio, dataFechamentoFim);
+
+            tickets.forEach(ticket -> ticket.setPrioridade(null));
+            return tickets;
 
         //Se não for, ele é suporte. Caso a flag allTickets seja true, retorna todos os tickets de todos os usuários.
         }else if(allTickets){
@@ -116,9 +119,22 @@ public class TicketService {
 
     public Ticket getById(Long id, Usuario usuario){
         //Valida se o solicitante pode requisitar o ticket do ID informado.
-        if(usuario.getTipoUsuario() == TipoUsuario.SOLICITANTE){
-            return respository.findByIdAndSolicitanteUsuarioId(id, usuario.getId())
+        if(usuario.getTipoUsuario().equals(TipoUsuario.SOLICITANTE) ){
+            var ticket = respository.findByIdAndSolicitanteUsuarioId(id, usuario.getId())
                     .orElseThrow(() -> new EntityNotFoundException("Ticket não encontrado."));
+
+            //Não será devolvido ações internas ao Solicitante.
+            var acoesFiltradas = ticket.getAcoes().stream().filter(acao -> !acao.isAcaoInterna()).toList();
+            ticket.setAcoes(acoesFiltradas);
+
+            //Tratando dados que o solicitante não irá ter acesso.
+            ticket.setDataPrimeiraResposta(null);
+            ticket.setPrioridade(null);
+            ticket.setHorasApontadas(null);
+            ticket.setPrevisaoPrimeiraResposta(null);
+            ticket.setPrevisaoResolucao(null);
+
+            return ticket;
         }else {
             return respository.findById(id)
                     .orElseThrow(() -> new EntityNotFoundException("Ticket não encontrado."));
