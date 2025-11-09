@@ -10,6 +10,7 @@ import br.deskiumcompany.deskium_ai_api.dto.acao.AcaoInsertDTO;
 import br.deskiumcompany.deskium_ai_api.dto.ticket.TicketGetAllResponseDTO;
 import br.deskiumcompany.deskium_ai_api.dto.ticket.TicketInsertDTO;
 import br.deskiumcompany.deskium_ai_api.dto.ticket.TicketResponseDTO;
+import br.deskiumcompany.deskium_ai_api.dto.ticket.TicketUpdateDTO;
 import br.deskiumcompany.deskium_ai_api.exception.BussinesException;
 import br.deskiumcompany.deskium_ai_api.service.AcaoService;
 import br.deskiumcompany.deskium_ai_api.service.TicketService;
@@ -111,5 +112,18 @@ public class TicketController {
 
         //Não tem URI de consulta apenas para uma Ação.
         return ResponseEntity.status(HttpStatusCodes.STATUS_CODE_CREATED).build();
+    }
+
+    @PutMapping("{id}")
+    public ResponseEntity update(
+            @PathVariable("id") long ticketId,
+            Authentication auth,
+            @RequestBody @Valid TicketUpdateDTO dto
+    ) throws BussinesException {
+        var usuario = (Usuario) auth.getPrincipal();
+        var ticket = service.getById(ticketId, usuario);
+        service.update(ticket, dto, usuario);
+
+        return ResponseEntity.ok().build();
     }
 }

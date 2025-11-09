@@ -18,7 +18,9 @@ public class SubStatusController {
     private ResponseEntity<List<SubStatusDTO>> getAll(){
         List<SubStatusDTO> subStatusList = new ArrayList<>();
         for(SubStatus sb : SubStatus.values()){
-            subStatusList.add(new SubStatusDTO(sb));
+            if(!sb.equals(SubStatus.FECHADO)){
+                subStatusList.add(new SubStatusDTO(sb));
+            }
         }
         return ResponseEntity.ok(subStatusList);
     }

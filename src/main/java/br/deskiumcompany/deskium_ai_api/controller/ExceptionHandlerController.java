@@ -5,6 +5,7 @@ import br.deskiumcompany.deskium_ai_api.exception.BussinesException;
 import jakarta.persistence.EntityNotFoundException;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
+import org.springframework.http.converter.HttpMessageNotReadableException;
 import org.springframework.security.authentication.BadCredentialsException;
 import org.springframework.validation.FieldError;
 import org.springframework.web.bind.MethodArgumentNotValidException;
@@ -93,5 +94,13 @@ public class ExceptionHandlerController {
 
         //notFound do response entity não aceita body.
         return ResponseEntity.status(HttpStatus.NOT_FOUND).body(apiExceptionDTO);
+    }
+
+    @ExceptionHandler(HttpMessageNotReadableException.class)
+    public ResponseEntity<ApiExceptionDTO> handleHttpMessageNotReadableException(HttpMessageNotReadableException e){
+        ApiExceptionDTO apiExceptionDTO = new ApiExceptionDTO("Erro ao interpretar a requisição. Alguma chave ou valor enviados estão " +
+                "escritos incorretamente ou em inconformidade com seus respectivos tipos de dados.");
+
+        return ResponseEntity.badRequest().body(apiExceptionDTO);
     }
 }

@@ -6,6 +6,7 @@ import br.deskiumcompany.deskium_ai_api.domain.Usuario;
 import br.deskiumcompany.deskium_ai_api.domain.enums.Status;
 import br.deskiumcompany.deskium_ai_api.domain.enums.SubStatus;
 import br.deskiumcompany.deskium_ai_api.domain.enums.TipoUsuario;
+import br.deskiumcompany.deskium_ai_api.dto.ticket.TicketUpdateDTO;
 import br.deskiumcompany.deskium_ai_api.exception.BussinesException;
 import br.deskiumcompany.deskium_ai_api.respository.TicketRespository;
 import jakarta.persistence.EntityNotFoundException;
@@ -26,6 +27,9 @@ public class TicketService {
 
     @Autowired
     private MotivoService motivoService;
+
+    @Autowired
+    private PrioridadeService prioridadeService;
 
     @Autowired
     private SuporteService suporteService;
@@ -130,5 +134,30 @@ public class TicketService {
                 throw new BussinesException("A " + dataDescricao + " final deve ser igual ou posterior a " + dataDescricao + " inicial.");
             }
         }
+    }
+
+    public void update(Ticket ticket, TicketUpdateDTO dto, Usuario usuario) throws BussinesException {
+        if(!ticket.getStatus().equals(Status.ABERTO))
+            throw new BussinesException("O ticket " + ticket.getId() + " não está aberto.");
+
+        if(usuario.getId() != ticket.getSuporte().getUsuario().getId())
+            throw new BussinesException("Usuário sem permição para alterar esse ticket.");
+
+        var motivo = motivoService.getById(dto.getMotivoId());
+        ticket.setMotivo(motivo);
+
+        var categoria = dto.getCategoriaId() != null
+                ? categoriaService.getById(dto.getCategoriaId())
+                : ticket.getCategoria();
+        ticket.setCategoria(categoria);
+
+        var prioridade = dto.getPrioridadeId() != null
+                ? prioridadeService.getById(dto.getPrioridadeId())
+                : ticket.getPrioridade();
+        ticket.setPrioridade(prioridade);
+
+        ticket.setSubStatus(dto.getSubStatusId());
+
+        respository.save(ticket);
     }
 }

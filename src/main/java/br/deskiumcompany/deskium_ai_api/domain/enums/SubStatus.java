@@ -4,6 +4,8 @@ public enum SubStatus {
     NOVO("Novo"),
     EM_ATENDIMENTO("Em atendimento"),
     AGUARDANDO_RETORNO("Aguardando retono"),
+
+//    Apenas para controle interno.
     FECHADO("Fechado");
 
     private final String desc;

@@ -42,7 +42,7 @@ public class Ticket extends EntidadeBase{
     private Suporte suporte;
 
     @ManyToOne()
-    @JoinColumn(name = "motivo_id")
+    @JoinColumn(name = "motivo_id", nullable = false)
     private Motivo motivo;
 
     @ManyToOne()
