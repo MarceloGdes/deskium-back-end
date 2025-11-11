@@ -40,8 +40,9 @@ public class TicketController {
 
     //O Spring injeta  o objeto Authentication na requisição, pois no meu Security Filter, a authenticação foi setada no contexto da requisição.
     //Nessa autenticação, o usuário já foi carregado previamente.
+
     @PostMapping
-    private ResponseEntity<TicketResponseDTO> create(
+    public ResponseEntity<TicketResponseDTO> create(
             @RequestBody @Valid TicketInsertDTO dto,
             Authentication authentication,
             UriComponentsBuilder builder
@@ -56,7 +57,7 @@ public class TicketController {
     }
 
     @GetMapping("{id}")
-    private ResponseEntity<TicketResponseDTO> getById(
+    public ResponseEntity<TicketResponseDTO> getById(
             Authentication auth,
             @PathVariable Long id){
 
@@ -67,7 +68,7 @@ public class TicketController {
     }
 
     @GetMapping()
-    private ResponseEntity<List<TicketGetAllResponseDTO>> getAll(
+    public ResponseEntity<List<TicketGetAllResponseDTO>> getAll(
             Authentication auth,
             @RequestParam(value = "status", required = false) Status status,
             @RequestParam(value = "ticketId", required = false) Long ticketId,
@@ -104,13 +105,13 @@ public class TicketController {
             @PathVariable("id") Long ticketId,
             Authentication auth,
             @RequestBody @Valid AcaoInsertDTO dto
+
     ) throws BussinesException {
         var usuario = (Usuario) auth.getPrincipal();
         var ticket = service.getById(ticketId, usuario);
-        var acao = new Acao(ticket, usuario, dto, OrigemAcao.SISTEMA);
-        acaoService.addAcao(acao);
+        acaoService.addAcao(new Acao(ticket, usuario, dto, OrigemAcao.SISTEMA));
 
-        //Não tem URI de consulta apenas para uma Ação.
+
         return ResponseEntity.status(HttpStatusCodes.STATUS_CODE_CREATED).build();
     }
 

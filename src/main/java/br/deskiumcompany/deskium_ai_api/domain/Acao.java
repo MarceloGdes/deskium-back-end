@@ -5,9 +5,7 @@ import br.deskiumcompany.deskium_ai_api.domain.enums.TipoUsuario;
 import br.deskiumcompany.deskium_ai_api.dto.acao.AcaoInsertDTO;
 import br.deskiumcompany.deskium_ai_api.dto.arquivo.ArquivoDTO;
 import jakarta.persistence.*;
-import lombok.AllArgsConstructor;
-import lombok.Data;
-import lombok.NoArgsConstructor;
+import lombok.*;
 
 import java.time.LocalDate;
 import java.time.LocalTime;
@@ -15,12 +13,13 @@ import java.util.ArrayList;
 import java.util.List;
 
 @Entity
-@Data
+@Getter
+@Setter
 @AllArgsConstructor
 @NoArgsConstructor
 public class Acao extends EntidadeBase {
 
-    @ManyToOne(optional = false)
+    @ManyToOne(optional = false, cascade = CascadeType.PERSIST) //Utilizado o cascade para gravar atualizações de SubStatus
     @JoinColumn(name = "ticket_id")
     private Ticket ticket;
 

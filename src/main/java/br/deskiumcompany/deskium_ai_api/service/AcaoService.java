@@ -3,6 +3,8 @@ package br.deskiumcompany.deskium_ai_api.service;
 import br.deskiumcompany.deskium_ai_api.domain.Acao;
 import br.deskiumcompany.deskium_ai_api.domain.Anexo;
 import br.deskiumcompany.deskium_ai_api.domain.enums.Status;
+import br.deskiumcompany.deskium_ai_api.domain.enums.SubStatus;
+import br.deskiumcompany.deskium_ai_api.domain.enums.TipoUsuario;
 import br.deskiumcompany.deskium_ai_api.exception.BussinesException;
 import br.deskiumcompany.deskium_ai_api.respository.AcaoRepository;
 import org.jsoup.Jsoup;
@@ -46,6 +48,11 @@ public class AcaoService {
             }
         }
 
+        //Atualizando o substatus do ticket.
+        if(acao.getUsuarioAutor().getTipoUsuario().equals(TipoUsuario.SOLICITANTE)
+                && acao.getTicket().getSubStatus().equals(SubStatus.AGUARDANDO_RETORNO)){
+            acao.getTicket().setSubStatus(SubStatus.EM_ATENDIMENTO);
+        }
         repository.save(acao);
     }
 
