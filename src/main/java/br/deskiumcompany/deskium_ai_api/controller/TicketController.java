@@ -109,8 +109,7 @@ public class TicketController {
     ) throws BussinesException {
         var usuario = (Usuario) auth.getPrincipal();
         var ticket = service.getById(ticketId, usuario);
-        acaoService.addAcao(new Acao(ticket, usuario, dto, OrigemAcao.SISTEMA));
-
+        acaoService.addAcao(new Acao(ticket, usuario, dto, OrigemAcao.SISTEMA), dto.getStatusId());
 
         return ResponseEntity.status(HttpStatusCodes.STATUS_CODE_CREATED).build();
     }
