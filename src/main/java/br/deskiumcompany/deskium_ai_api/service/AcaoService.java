@@ -82,7 +82,9 @@ public class AcaoService {
 
         repository.save(acao);
 
-        if(acao.getUsuarioAutor().getTipoUsuario().name().equals(TipoUsuario.SUPORTE.name())){
+        if(acao.getUsuarioAutor().getTipoUsuario().name().equals(TipoUsuario.SUPORTE.name())
+                && !acao.isAcaoInterna()){
+
             emailService.enviarEmailComAnexo(
                     acao.getTicket().getSolicitante().getUsuario().getEmail(),
                     "Seu ticket #" + acao.getTicket().getId() + " - '" + acao.getTicket().getTitulo() + "' foi atualizado.",

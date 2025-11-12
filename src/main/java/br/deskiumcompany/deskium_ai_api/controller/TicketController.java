@@ -15,6 +15,7 @@ import br.deskiumcompany.deskium_ai_api.exception.BussinesException;
 import br.deskiumcompany.deskium_ai_api.service.AcaoService;
 import br.deskiumcompany.deskium_ai_api.service.TicketService;
 import com.google.api.client.http.HttpStatusCodes;
+import jakarta.mail.MessagingException;
 import jakarta.validation.Valid;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.ResponseEntity;
@@ -22,6 +23,7 @@ import org.springframework.security.core.Authentication;
 import org.springframework.web.bind.annotation.*;
 import org.springframework.web.util.UriComponentsBuilder;
 
+import java.io.FileNotFoundException;
 import java.io.IOException;
 import java.net.URI;
 import java.time.LocalDateTime;
@@ -106,7 +108,7 @@ public class TicketController {
             Authentication auth,
             @RequestBody @Valid AcaoInsertDTO dto
 
-    ) throws BussinesException {
+    ) throws BussinesException, MessagingException, FileNotFoundException {
         var usuario = (Usuario) auth.getPrincipal();
         var ticket = service.getById(ticketId, usuario);
         acaoService.addAcao(new Acao(ticket, usuario, dto, OrigemAcao.SISTEMA), dto.getStatusId());
