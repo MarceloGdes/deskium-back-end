@@ -7,11 +7,14 @@ import br.deskiumcompany.deskium_ai_api.domain.enums.SubStatus;
 import br.deskiumcompany.deskium_ai_api.domain.enums.TipoUsuario;
 import br.deskiumcompany.deskium_ai_api.exception.BussinesException;
 import br.deskiumcompany.deskium_ai_api.respository.AcaoRepository;
+import jakarta.mail.MessagingException;
 import org.jsoup.Jsoup;
 import org.jsoup.nodes.Document;
 import org.jsoup.nodes.Element;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
+
+import java.io.FileNotFoundException;
 
 @Service
 public class AcaoService {
@@ -21,9 +24,12 @@ public class AcaoService {
     @Autowired
     private AcaoRepository repository;
 
+    @Autowired
+    private EmailService emailService;
+
     //TODO: utilizar o clean do Jsoup aumentando a segurança contra ataques XSS (tags html que executam scripts)
 
-    public void addAcao(Acao acao, Status newStatus) throws BussinesException {
+    public void addAcao(Acao acao, Status newStatus) throws BussinesException, MessagingException, FileNotFoundException {
         if(!acao.getTicket().getStatus().equals(Status.ABERTO))
             throw new BussinesException("O ticket " + acao.getTicket().getId() + " não está aberto.");
 
@@ -55,7 +61,9 @@ public class AcaoService {
         }
 
         //Atualizando status do ticket.
-        if(acao.getTicket().getSuporte().getUsuario().getId().equals(acao.getUsuarioAutor().getId()) && !acao.isAcaoInterna()){
+        if(acao.getTicket().getSuporte().getUsuario().getId().equals(acao.getUsuarioAutor().getId())
+                && !acao.isAcaoInterna()
+                && !acao.getTicket().getStatus().name().equals(newStatus.name())){
 
             //Vlidação de categoria e prioridade preenchidos.
             if(acao.getTicket().getCategoria() == null)
@@ -73,6 +81,14 @@ public class AcaoService {
         }
 
         repository.save(acao);
+
+        if(acao.getUsuarioAutor().getTipoUsuario().name().equals(TipoUsuario.SUPORTE.name())){
+            emailService.enviarEmailComAnexo(
+                    acao.getTicket().getSolicitante().getUsuario().getEmail(),
+                    "Seu ticket #" + acao.getTicket().getId() + " - '" + acao.getTicket().getTitulo() + "' foi atualizado.",
+                    acao.getHtml(),
+                    acao.getAnexos());
+        }
     }
 
     protected String extractTextFromHTML(String html){
