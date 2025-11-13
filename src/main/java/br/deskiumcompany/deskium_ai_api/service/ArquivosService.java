@@ -13,6 +13,7 @@ import java.nio.file.Path;
 import java.nio.file.Paths;
 import java.nio.file.StandardCopyOption;
 import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.List;
 import java.util.UUID;
 
@@ -20,6 +21,18 @@ import java.util.UUID;
 public class ArquivosService {
     @Value("${upload.dir}")
     private String uploadDir;
+
+    private static List<String> TIPOS_PERMITIDOS = Arrays.asList(
+            "application/pdf",
+            "image/jpeg",
+            "image/png",
+            "audio/mpeg",
+            "audio/wav",
+            "audio/x-wav",
+            "audio/mp4",
+            "audio/x-m4a",
+            "audio/ogg"
+    );
 
     public List<String> saveFiles(List<MultipartFile> files) throws BussinesException, IOException {
         Path uploadsPath = Paths.get(uploadDir);
@@ -34,11 +47,7 @@ public class ArquivosService {
                 throw new BussinesException("Um dos arquivos não foi enviado corretamente. Verifique.");
 
             var contentType = file.getContentType();
-            if( !(contentType.equals("application/pdf") ||
-                    contentType.equals("image/jpeg") ||
-                    contentType.equals("image/png") ||
-                    contentType.equals("audio/mpeg"))){
-
+            if(!TIPOS_PERMITIDOS.contains(contentType)){
                 throw new BussinesException("Arquivo " + file.getOriginalFilename() + " não é um tipo permitido");
             }
         }

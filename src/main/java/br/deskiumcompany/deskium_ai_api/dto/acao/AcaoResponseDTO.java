@@ -18,6 +18,7 @@ import java.util.List;
 @AllArgsConstructor
 @NoArgsConstructor
 public class AcaoResponseDTO {
+    private long id;
     private int numAcao;
     private LocalDateTime criadoEm;
     private boolean acaoInterna;
@@ -31,6 +32,7 @@ public class AcaoResponseDTO {
 
 
     public AcaoResponseDTO(Acao acao) {
+        this.id = acao.getId();
         this.numAcao = acao.getNumAcao();
         this.criadoEm = acao.getCriadoEm();
         this.acaoInterna = acao.isAcaoInterna();

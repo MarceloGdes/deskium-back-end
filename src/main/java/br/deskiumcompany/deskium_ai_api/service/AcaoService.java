@@ -8,6 +8,7 @@ import br.deskiumcompany.deskium_ai_api.domain.enums.TipoUsuario;
 import br.deskiumcompany.deskium_ai_api.exception.BussinesException;
 import br.deskiumcompany.deskium_ai_api.respository.AcaoRepository;
 import jakarta.mail.MessagingException;
+import jakarta.persistence.EntityNotFoundException;
 import org.jsoup.Jsoup;
 import org.jsoup.nodes.Document;
 import org.jsoup.nodes.Element;
@@ -107,5 +108,10 @@ public class AcaoService {
         }
 
         return doc.body().html();
+    }
+
+    public Acao getById(Long acaoId, Long ticketId) {
+        return repository.findByIdAndTicketId(acaoId, ticketId)
+                .orElseThrow(() -> new EntityNotFoundException("Acão não encontrada."));
     }
 }
