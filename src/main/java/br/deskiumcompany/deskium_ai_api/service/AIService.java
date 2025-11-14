@@ -33,11 +33,13 @@ public class AIService {
     );
 
     private static String PROMPT_TRANSCRICAO = """
+            Trancreva o audio enviado. Ele se refere a uma ligação telefonica.
+            
             Regras de formatação:
             - Separe cada fala em um parágrafo <p>.
             - Identifique as pessoas da ligação e coloque o nome da pessoa entre a <strong>...</strong>, em cada respectiva fala.
-            - Mantenha as marcações de tempo (se houver) no formato [mm:ss] dentro do parágrafo.
-            - Retorne apenas o HTML, sem comentários, emojis, explicações ou formatações adicionais.
+            - Mantenha as marcações de tempo (se houver) no formato [mm:ss] dentro do parágrafo, no começo de cada linha.
+            - Retorne apenas o HTML, sem comentários, emojis, explicações, formatações de markdown ou formatações adicionais. Texto plano com as devidas tags citadas.
                        
             Exemplo:
             <p><strong>Nome do atendente:</strong> Olá, bom dia!</p>
@@ -91,7 +93,7 @@ public class AIService {
         );
 
         GenerateContentResponse response = client.models.generateContent(
-                "gemini-flash-latest",
+                "gemini-2.5-pro",
                 Content.builder()
                         .parts(parts)
                         .build(),
@@ -115,7 +117,7 @@ public class AIService {
         );
 
         GenerateContentResponse response = client.models.generateContent(
-                "gemini-flash-latest",
+                "gemini-2.5-pro",
                 Content.builder()
                         .parts(parts)
                         .build(),
