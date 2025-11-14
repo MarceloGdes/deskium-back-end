@@ -29,6 +29,9 @@ public class Acao extends EntidadeBase {
     @Column(nullable = false)
     private boolean acaoInterna;
 
+    @Column(nullable = false)
+    private boolean acaoTranscricao;
+
     private LocalDate dataAtendimento;
     private LocalTime inicioAtendimento;
     private LocalTime fimAtendimento;
@@ -62,6 +65,9 @@ public class Acao extends EntidadeBase {
                 : dto.isAcaoInterna();
         this.html = dto.getHtml();
         this.origemAcao = origemAcao;
+        this.acaoTranscricao = usuario.getTipoUsuario() == TipoUsuario.SOLICITANTE
+                ? false
+                : dto.isAcaoTranscricao();
 
         if(dto.getAnexos() != null && !dto.getAnexos().isEmpty()){
             this.anexos = new ArrayList<>();

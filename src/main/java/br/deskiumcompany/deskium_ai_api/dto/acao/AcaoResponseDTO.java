@@ -22,6 +22,7 @@ public class AcaoResponseDTO {
     private int numAcao;
     private LocalDateTime criadoEm;
     private boolean acaoInterna;
+    private boolean acaoTranscricao;
     private LocalDate dataAtendimento;
     private LocalTime inicioAtendimento;
     private LocalTime fimAtendimento;
@@ -36,6 +37,7 @@ public class AcaoResponseDTO {
         this.numAcao = acao.getNumAcao();
         this.criadoEm = acao.getCriadoEm();
         this.acaoInterna = acao.isAcaoInterna();
+        this.acaoTranscricao = acao.isAcaoTranscricao();
         this.dataAtendimento = acao.getDataAtendimento();
         this.inicioAtendimento = acao.getInicioAtendimento();
         this.fimAtendimento = acao.getFimAtendimento();

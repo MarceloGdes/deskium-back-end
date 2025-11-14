@@ -15,6 +15,7 @@ import java.util.List;
 @NoArgsConstructor
 public class AcaoInsertDTO {
     private boolean acaoInterna = false;
+    private boolean acaoTranscricao = false;
     private Status statusId = Status.ABERTO;
     @NotBlank
     private String html;
