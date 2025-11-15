@@ -44,7 +44,8 @@ public class SecurityConfiguration {
                         .requestMatchers(HttpMethod.POST, "/suportes").hasAnyRole(TipoUsuario.GESTOR_SUPORTE.name())
                         .requestMatchers(HttpMethod.POST, "/tickets").hasAnyRole(TipoUsuario.SOLICITANTE.name())
                         .requestMatchers(HttpMethod.PUT, "/tickets/{id}").hasAnyRole(TipoUsuario.SUPORTE.name())
-                        .requestMatchers(HttpMethod.POST,"/ai/transcribe-audio").hasAnyRole(TipoUsuario.SUPORTE.name())
+                        .requestMatchers(HttpMethod.POST,"/ai/transcribe-audio/{fileName}").hasAnyRole(TipoUsuario.SUPORTE.name())
+                        .requestMatchers(HttpMethod.POST,"/ai/generate-email/{ticketId}/{acaoId}").hasAnyRole(TipoUsuario.SUPORTE.name())
                         .anyRequest().authenticated()
                 )
                 //Tirando bloqueio de CORS - Apenas para dev, em prod deve ser configurado

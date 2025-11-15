@@ -27,10 +27,10 @@ public class AIController {
         return ResponseEntity.ok(response);
     }
 
-    @PostMapping("generate-email")
+    @PostMapping("generate-email/{ticketId}/{acaoId}")
     public ResponseEntity<GeminiResponseDTO> generateEmail(
-            @RequestParam(value = "acaoId", required = true) Long acaoId,
-            @RequestParam(value = "ticketId", required = true) Long ticketId) throws IOException, BussinesException {
+            @PathVariable(value = "acaoId") Long acaoId,
+            @PathVariable(value = "ticketId") Long ticketId) throws IOException, BussinesException {
 
         Acao acao = acaoService.getById(acaoId, ticketId);
         GeminiResponseDTO response = new GeminiResponseDTO(service.generateEmail(acao));

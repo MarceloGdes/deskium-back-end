@@ -93,7 +93,7 @@ public class AIService {
         );
 
         GenerateContentResponse response = client.models.generateContent(
-                "gemini-2.5-pro",
+                "gemini-2.5-flash",
                 Content.builder()
                         .parts(parts)
                         .build(),
@@ -107,9 +107,12 @@ public class AIService {
                 .apiKey(apiKey)
                 .build();
 
+        if(!acao.isAcaoTranscricao())
+            throw new BussinesException("A ação não é uma transcrição.");
+
         var textoAcao = acao.getTextoPuro();
         if(textoAcao.isBlank())
-            throw new BussinesException("O texto da ação não foi preenchido");
+            throw new BussinesException("O texto da ação não foi preenchido.");
 
         List<Part> parts = List.of(
                 Part.fromText(PROMPT_GERACAO_EMAIL),
@@ -117,7 +120,7 @@ public class AIService {
         );
 
         GenerateContentResponse response = client.models.generateContent(
-                "gemini-2.5-pro",
+                "gemini-2.5-flash",
                 Content.builder()
                         .parts(parts)
                         .build(),
