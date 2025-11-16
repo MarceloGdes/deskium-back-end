@@ -6,10 +6,13 @@ import br.deskiumcompany.deskium_ai_api.domain.enums.SubStatus;
 import br.deskiumcompany.deskium_ai_api.dto.arquivo.ArquivoDTO;
 import br.deskiumcompany.deskium_ai_api.dto.ticket.TicketInsertDTO;
 import jakarta.persistence.*;
-import lombok.*;
+import lombok.AllArgsConstructor;
+import lombok.Getter;
+import lombok.NoArgsConstructor;
+import lombok.Setter;
 
+import java.time.Duration;
 import java.time.LocalDateTime;
-import java.time.LocalTime;
 import java.util.ArrayList;
 import java.util.List;
 
@@ -26,7 +29,7 @@ public class Ticket extends EntidadeBase{
     private LocalDateTime dataResolucao;
     private LocalDateTime previsaoPrimeiraResposta;
     private LocalDateTime dataPrimeiraResposta;
-    private LocalTime horasApontadas;
+    private Duration horasApontadas;
 
     @Enumerated(EnumType.STRING)
     @Column(nullable = false)

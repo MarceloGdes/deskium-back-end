@@ -69,6 +69,10 @@ public class Acao extends EntidadeBase {
                 ? false
                 : dto.isAcaoTranscricao();
 
+        this.dataAtendimento = dto.getDataAtendimento();
+        this.inicioAtendimento = dto.getInicioAtendimento();
+        this.fimAtendimento = dto.getFimAtendimento();
+
         if(dto.getAnexos() != null && !dto.getAnexos().isEmpty()){
             this.anexos = new ArrayList<>();
 

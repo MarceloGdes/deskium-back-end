@@ -54,6 +54,8 @@ public interface TicketRespository extends JpaRepository<Ticket, Long> {
         AND (CAST(:dataFechamentoInicio AS timestamp) IS NULL
             OR CAST(:dataFechamentoFim AS timestamp) IS NULL
             OR t.dataResolucao BETWEEN :dataFechamentoInicio AND :dataFechamentoFim)
+            
+        ORDER BY t.criadoEm
         
     """)
 //    *Utilizado o cast para apontar para o JPQL qual o tipo do dado que estamos validando se

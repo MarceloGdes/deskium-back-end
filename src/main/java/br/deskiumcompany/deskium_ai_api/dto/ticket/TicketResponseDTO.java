@@ -10,8 +10,8 @@ import lombok.AllArgsConstructor;
 import lombok.Data;
 import lombok.NoArgsConstructor;
 
+import java.time.Duration;
 import java.time.LocalDateTime;
-import java.time.LocalTime;
 import java.util.ArrayList;
 import java.util.List;
 
@@ -26,7 +26,7 @@ public class TicketResponseDTO {
     private LocalDateTime dataResolucao;
     private LocalDateTime previsaoPrimeiraResposta;
     private LocalDateTime dataPrimeiraResposta;
-    private LocalTime horasApontadas;
+    private Duration horasApontadas;
     private StatusDTO status;
     private SolicitanteResponseDTO solicitante;
     private SuporteResponseDTO suporte;

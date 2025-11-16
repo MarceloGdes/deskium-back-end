@@ -16,6 +16,10 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
 import java.io.FileNotFoundException;
+import java.time.Duration;
+import java.time.LocalDate;
+import java.time.LocalDateTime;
+import java.time.LocalTime;
 
 @Service
 public class AcaoService {
@@ -31,19 +35,23 @@ public class AcaoService {
     //TODO: utilizar o clean do Jsoup aumentando a segurança contra ataques XSS (tags html que executam scripts)
 
     public void addAcao(Acao acao, Status newStatus) throws BussinesException, MessagingException, FileNotFoundException {
-        if(!acao.getTicket().getStatus().equals(Status.ABERTO))
-            throw new BussinesException("O ticket " + acao.getTicket().getId() + " não está aberto.");
+        var ticket = acao.getTicket();
+        var usuarioSolicitante = ticket.getSolicitante().getUsuario();
+        var usuarioSuporte = ticket.getSuporte().getUsuario();
 
-        if(acao.getUsuarioAutor().getId() != acao.getTicket().getSolicitante().getUsuario().getId() &&
-                acao.getUsuarioAutor().getId() != acao.getTicket().getSuporte().getUsuario().getId())
+        if(!ticket.getStatus().equals(Status.ABERTO))
+            throw new BussinesException("O ticket " + ticket.getId() + " não está aberto.");
+
+        if(acao.getUsuarioAutor().getId() != usuarioSolicitante.getId() &&
+                acao.getUsuarioAutor().getId() != usuarioSuporte.getId())
             throw new BussinesException("Usuário sem acesso a adições de ações nesse ticket");
 
-        acao.setNumAcao(repository.findLastNumAcao(acao.getTicket()) + 1);
+        acao.setNumAcao(repository.findLastNumAcao(ticket) + 1);
         acao.setTextoPuro(extractTextFromHTML(acao.getHtml()));
         acao.setHtml(formatHtml(acao.getHtml()));
 
         if(acao.getTextoPuro().length() > 10000)
-            throw new BussinesException("A descrição da ação, ultrapassa a quantidade de 10.000 caracteres");
+            throw new BussinesException("A descrição da ação, ultrapassa a quantidade de 10.000 caracteres.");
 
         if(acao.getAnexos() != null && !acao.getAnexos().isEmpty()){
             for (Anexo anexo : acao.getAnexos()) {
@@ -57,28 +65,42 @@ public class AcaoService {
 
         //Atualizando o substatus do ticket.
         if(acao.getUsuarioAutor().getTipoUsuario().equals(TipoUsuario.SOLICITANTE)
-                && acao.getTicket().getSubStatus().equals(SubStatus.AGUARDANDO_RETORNO)){
-            acao.getTicket().setSubStatus(SubStatus.EM_ATENDIMENTO);
+                && ticket.getSubStatus().equals(SubStatus.AGUARDANDO_RETORNO)){
+
+            ticket.setSubStatus(SubStatus.EM_ATENDIMENTO);
         }
 
-        //Atualizando status do ticket.
-        if(acao.getTicket().getSuporte().getUsuario().getId().equals(acao.getUsuarioAutor().getId())
-                && !acao.isAcaoInterna()
-                && !acao.getTicket().getStatus().name().equals(newStatus.name())){
+        //Ações realizadas pelo suporte
+        if(usuarioSuporte.getId().equals(acao.getUsuarioAutor().getId())) {
+            //Calculando horas apontadas
+            ticket.setHorasApontadas(calcularHoras(acao));
 
-            //Vlidação de categoria e prioridade preenchidos.
-            if(acao.getTicket().getCategoria() == null)
-                throw new BussinesException("Para fechar o ticket, é necessário o preenchimento da categoria.");
+            //Atualizando status do ticket.
+            if(!acao.isAcaoInterna() && !ticket.getStatus().name().equals(newStatus.name())){
+                //Validação de categoria e prioridade preenchidos.
+                if(ticket.getCategoria() == null)
+                    throw new BussinesException("Para fechar o ticket, é necessário o preenchimento da categoria.");
 
-            if(acao.getTicket().getPrioridade() == null)
-                throw new BussinesException("Para fechar o ticket, é necessário o preenchimento da prioridade.");
+                if(ticket.getPrioridade() == null)
+                    throw new BussinesException("Para fechar o ticket, é necessário o preenchimento da prioridade.");
 
-            acao.getTicket().setStatus(newStatus);
-            acao.getTicket().setSubStatus(SubStatus.FECHADO);
+                ticket.setStatus(newStatus);
+                ticket.setSubStatus(SubStatus.FECHADO);
+                ticket.setDataResolucao(LocalDateTime.now());
 
-        }else if(!acao.getTicket().getStatus().name().equals(newStatus.name())) {
-            throw new BussinesException("Você não tem acesso para alterar o status do ticket, " +
-                    "ou está alterando o status com uma ação interna.");
+            }else if(!ticket.getStatus().name().equals(newStatus.name())) {
+                throw new BussinesException("Você não tem acesso para alterar o status do ticket, " +
+                        "ou está alterando o status com uma ação interna.");
+            }
+        }
+
+
+
+        //Setando data da primeira resposta.
+        if(ticket.getDataPrimeiraResposta() == null
+                && acao.getUsuarioAutor().getId().equals(usuarioSuporte.getId())){
+
+            ticket.setDataPrimeiraResposta(LocalDateTime.now());
         }
 
         repository.save(acao);
@@ -87,11 +109,28 @@ public class AcaoService {
                 && !acao.isAcaoInterna()){
 
             emailService.enviarEmailComAnexo(
-                    acao.getTicket().getSolicitante().getUsuario().getEmail(),
-                    "Seu ticket #" + acao.getTicket().getId() + " - '" + acao.getTicket().getTitulo() + "' foi atualizado.",
+                    usuarioSolicitante.getEmail(),
+                    "Seu ticket #" + ticket.getId() + " - '" + ticket.getTitulo() + "' foi atualizado.",
                     acao.getHtml(),
                     acao.getAnexos());
         }
+    }
+
+    private Duration calcularHoras(Acao acao) throws BussinesException {
+        LocalDate dataAtendimento = acao.getDataAtendimento();
+        LocalTime inicioAtendimento = acao.getInicioAtendimento();
+        LocalTime fimAtendimento = acao.getFimAtendimento();
+
+        if(dataAtendimento == null || inicioAtendimento == null || fimAtendimento == null)
+            throw new BussinesException("Data e horários de atendimento não preenchidos. Valide se todos os campso estão preenchidos.");
+
+        if(dataAtendimento.isBefore(acao.getTicket().getCriadoEm().toLocalDate()))
+            throw new BussinesException("A data de atendimento deve ser depois da data de abertura do ticket.");
+
+        if(inicioAtendimento.isAfter(fimAtendimento))
+            throw new BussinesException("O inicio do atendimento deve ser antes do final do atendimento.");
+
+        return Duration.between(inicioAtendimento, fimAtendimento);
     }
 
     protected String extractTextFromHTML(String html){
