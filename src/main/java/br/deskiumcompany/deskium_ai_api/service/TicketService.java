@@ -127,13 +127,6 @@ public class TicketService {
             var acoesFiltradas = ticket.getAcoes().stream().filter(acao -> !acao.isAcaoInterna()).toList();
             ticket.setAcoes(acoesFiltradas);
 
-            //Tratando dados que o solicitante não irá ter acesso.
-            ticket.setDataPrimeiraResposta(null);
-            ticket.setPrioridade(null);
-            ticket.setHorasApontadas(null);
-            ticket.setPrevisaoPrimeiraResposta(null);
-            ticket.setPrevisaoResolucao(null);
-
             return ticket;
         }else {
             return respository.findById(id)

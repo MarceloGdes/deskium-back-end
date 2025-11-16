@@ -26,7 +26,6 @@ import org.springframework.web.bind.annotation.*;
 import org.springframework.web.util.UriComponentsBuilder;
 
 import java.io.FileNotFoundException;
-import java.io.IOException;
 import java.net.URI;
 import java.time.LocalDateTime;
 import java.util.ArrayList;
@@ -50,14 +49,13 @@ public class TicketController {
             @RequestBody @Valid TicketInsertDTO dto,
             Authentication authentication,
             UriComponentsBuilder builder
-    ) throws BussinesException, IOException {
+    ) throws BussinesException {
 
         var usuario = (Usuario) authentication.getPrincipal();
         var ticket = service.insert(new Ticket(dto, usuario, OrigemAcao.SISTEMA));
-        var response = new TicketResponseDTO(ticket);
 
-        URI uri = builder.path("/tickets/{id}").buildAndExpand(response.getId()).toUri();
-        return ResponseEntity.created(uri).body(response);
+        URI uri = builder.path("/tickets/{id}").buildAndExpand(ticket.getId()).toUri();
+        return ResponseEntity.created(uri).build();
     }
 
     @GetMapping("{id}")
@@ -68,7 +66,7 @@ public class TicketController {
         var usuario = (Usuario) auth.getPrincipal();
         Ticket ticket = service.getById(id, usuario);
 
-        return ResponseEntity.ok(new TicketResponseDTO(ticket));
+        return ResponseEntity.ok(new TicketResponseDTO(ticket, usuario));
     }
 
     @GetMapping()

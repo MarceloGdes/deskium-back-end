@@ -72,7 +72,14 @@ public class AcaoService {
 
         //Ações realizadas pelo suporte
         if(usuarioSuporte.getId().equals(acao.getUsuarioAutor().getId())) {
-            //Calculando horas apontadas
+            //Setando data da primeira resposta.
+            if(ticket.getDataPrimeiraResposta() == null
+                    && !acao.isAcaoInterna()){
+
+                ticket.setDataPrimeiraResposta(LocalDateTime.now());
+            }
+
+            //Calculando horas apontada
             if(ticket.getHorasApontadas() != null){
                 ticket.setHorasApontadas(ticket.getHorasApontadas().plus(calcularHoras(acao)));
             }else {
@@ -80,8 +87,15 @@ public class AcaoService {
             }
 
             //Atualizando status do ticket.
-            if(!acao.isAcaoInterna() && !ticket.getStatus().name().equals(newStatus.name())){
+            if(!ticket.getStatus().name().equals(newStatus.name())){
+                //Valida se a ação é interna.
+                if(acao.isAcaoInterna())
+                    throw new BussinesException("O ticket não pode ser fechado com uma ação interna.");
+
                 //Validação de categoria e prioridade preenchidos.
+                if(ticket.getCategoria() == null)
+                    throw new BussinesException("Para fechar o ticket, é necessário o preenchimento da categoria.");
+
                 if(ticket.getCategoria() == null)
                     throw new BussinesException("Para fechar o ticket, é necessário o preenchimento da categoria.");
 
@@ -92,19 +106,7 @@ public class AcaoService {
                 ticket.setSubStatus(SubStatus.FECHADO);
                 ticket.setDataResolucao(LocalDateTime.now());
 
-            }else if(!ticket.getStatus().name().equals(newStatus.name())) {
-                throw new BussinesException("Você não tem acesso para alterar o status do ticket, " +
-                        "ou está alterando o status com uma ação interna.");
             }
-        }
-
-
-
-        //Setando data da primeira resposta.
-        if(ticket.getDataPrimeiraResposta() == null
-                && acao.getUsuarioAutor().getId().equals(usuarioSuporte.getId())){
-
-            ticket.setDataPrimeiraResposta(LocalDateTime.now());
         }
 
         repository.save(acao);

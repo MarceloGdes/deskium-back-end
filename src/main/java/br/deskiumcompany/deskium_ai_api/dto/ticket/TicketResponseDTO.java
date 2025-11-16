@@ -1,6 +1,7 @@
 package br.deskiumcompany.deskium_ai_api.dto.ticket;
 
 import br.deskiumcompany.deskium_ai_api.domain.*;
+import br.deskiumcompany.deskium_ai_api.domain.enums.TipoUsuario;
 import br.deskiumcompany.deskium_ai_api.dto.acao.AcaoResponseDTO;
 import br.deskiumcompany.deskium_ai_api.dto.solicitante.SolicitanteResponseDTO;
 import br.deskiumcompany.deskium_ai_api.dto.status.StatusDTO;
@@ -36,22 +37,26 @@ public class TicketResponseDTO {
     private Prioridade prioridade;
     private List<AcaoResponseDTO> acoes;
 
-    public TicketResponseDTO(Ticket ticket) {
+    public TicketResponseDTO(Ticket ticket, Usuario usuario) {
         this.id = ticket.getId();
         this.criadoEm = ticket.getCriadoEm();
         this.titulo = ticket.getTitulo();
         this.previsaoResolucao = ticket.getPrevisaoResolucao();
         this.dataResolucao = ticket.getDataResolucao();
-        this.previsaoPrimeiraResposta = ticket.getPrevisaoPrimeiraResposta();
-        this.dataPrimeiraResposta = ticket.getDataPrimeiraResposta();
-        this.horasApontadas = ticket.getHorasApontadas();
         this.status = new StatusDTO(ticket.getStatus());
         this.solicitante = new SolicitanteResponseDTO(ticket.getSolicitante());
         this.suporte = new SuporteResponseDTO(ticket.getSuporte());
         this.motivo = ticket.getMotivo();
         this.categoria = ticket.getCategoria();
         this.subStatus = new SubStatusDTO(ticket.getSubStatus());
-        this.prioridade = ticket.getPrioridade();
+
+        //Retorna essas informações apenas se o usuário não for SOLICITANTE
+        if(!usuario.getTipoUsuario().name().equals(TipoUsuario.SOLICITANTE.name())){
+            this.previsaoPrimeiraResposta = ticket.getPrevisaoPrimeiraResposta();
+            this.dataPrimeiraResposta = ticket.getDataPrimeiraResposta();
+            this.horasApontadas = ticket.getHorasApontadas();
+            this.prioridade = ticket.getPrioridade();
+        }
 
         if(ticket.getAcoes() != null && !ticket.getAcoes().isEmpty()){
             this.acoes = new ArrayList<>();

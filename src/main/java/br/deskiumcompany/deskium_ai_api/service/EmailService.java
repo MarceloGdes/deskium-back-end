@@ -57,10 +57,10 @@ public class EmailService {
     public String gerarHTMLEmail(String conteudoTicket) {
         String template = """
         <div style="font-family: Arial, sans-serif; max-width: 600px; margin: 0 auto; padding: 20px; background-color: #ffffff;">
-            <h3 style="color: #333; font-size: 20px; margin-bottom: 20px;">Atualização de Ticket</h3>
-            <p style="color: #333; font-size: 16px; margin-bottom: 10px;">Seu ticket foi atualizado!</p>
-            <p style="color: #666; font-size: 14px; font-style: italic; margin-bottom: 20px;">Imagens podem não carregar, acesse o Deskium para visualizar o ticket.</p>
+            <h3 style="color: #333; font-size: 20px; margin-bottom: 20px;">Seu ticket foi atualizado!</h3>
+            <p style="color: #666; font-size: 14px; font-style: italic; margin-bottom: 20px;">Imagens podem não carregar, acesse o Deskium para visualizar e responder o ticket.</p>
             <div id="conteudo" style="background-color: #f8f9fa; padding: 20px; border-radius: 6px; border: 1px solid #dee2e6;"></div>
+            <p style="color: #666; font-size: 14px; font-style: italic; margin-bottom: 20px;">Não responda esse e-mail.</p>
         </div>
         """;
 
