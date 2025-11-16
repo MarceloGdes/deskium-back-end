@@ -2,6 +2,7 @@ package br.deskiumcompany.deskium_ai_api.controller;
 
 import br.deskiumcompany.deskium_ai_api.dto.exception.ApiExceptionDTO;
 import br.deskiumcompany.deskium_ai_api.exception.BussinesException;
+import com.google.genai.errors.ServerException;
 import jakarta.persistence.EntityNotFoundException;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
@@ -102,5 +103,20 @@ public class ExceptionHandlerController {
                 "escritos incorretamente ou em inconformidade com seus respectivos tipos de dados.");
 
         return ResponseEntity.badRequest().body(apiExceptionDTO);
+    }
+
+    //Exceções do GEMINI
+    @ExceptionHandler(ServerException.class)
+    public ResponseEntity<ApiExceptionDTO> handleServerException(ServerException e){
+        ApiExceptionDTO apiExceptionDTO;
+
+        if(e.code() == HttpStatus.SERVICE_UNAVAILABLE.value()){
+            apiExceptionDTO = new ApiExceptionDTO("O Serviço de transcrição e geração de e-mail está indisponível. Tente novamente mais tarde.");
+
+        }else {
+            apiExceptionDTO = new ApiExceptionDTO("Ocorreu um erro desconhecido na comunicação com o Serviço de IA. Tente novamente mais tarde.");
+        }
+
+        return ResponseEntity.status(e.code()).body(apiExceptionDTO);
     }
 }

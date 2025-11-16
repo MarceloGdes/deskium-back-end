@@ -6,6 +6,7 @@ import br.deskiumcompany.deskium_ai_api.domain.Usuario;
 import br.deskiumcompany.deskium_ai_api.domain.enums.OrigemAcao;
 import br.deskiumcompany.deskium_ai_api.domain.enums.Status;
 import br.deskiumcompany.deskium_ai_api.domain.enums.SubStatus;
+import br.deskiumcompany.deskium_ai_api.domain.enums.TipoUsuario;
 import br.deskiumcompany.deskium_ai_api.dto.acao.AcaoInsertDTO;
 import br.deskiumcompany.deskium_ai_api.dto.ticket.TicketGetAllResponseDTO;
 import br.deskiumcompany.deskium_ai_api.dto.ticket.TicketInsertDTO;
@@ -18,6 +19,7 @@ import com.google.api.client.http.HttpStatusCodes;
 import jakarta.mail.MessagingException;
 import jakarta.validation.Valid;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.security.core.Authentication;
 import org.springframework.web.bind.annotation.*;
@@ -89,6 +91,11 @@ public class TicketController {
             ) throws BussinesException {
 
         var usuario = (Usuario) auth.getPrincipal();
+
+        if(usuario.getTipoUsuario().name().equals(TipoUsuario.SOLICITANTE.name()) && allTickets){
+            return ResponseEntity.status(HttpStatus.FORBIDDEN).build();
+        }
+
         List<Ticket> tickets = service.getAll(usuario, status, ticketId, assunto,
                 suporte, solicitante, subStatus, motivoId, categoriaId, dataAberturaInicio,
                 dataAberturaFim, dataFechamentoInicio, dataFechamentoFim, allTickets);

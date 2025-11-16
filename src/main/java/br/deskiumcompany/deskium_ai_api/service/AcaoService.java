@@ -73,7 +73,11 @@ public class AcaoService {
         //Ações realizadas pelo suporte
         if(usuarioSuporte.getId().equals(acao.getUsuarioAutor().getId())) {
             //Calculando horas apontadas
-            ticket.setHorasApontadas(calcularHoras(acao));
+            if(ticket.getHorasApontadas() != null){
+                ticket.setHorasApontadas(ticket.getHorasApontadas().plus(calcularHoras(acao)));
+            }else {
+                ticket.setHorasApontadas(calcularHoras(acao));
+            }
 
             //Atualizando status do ticket.
             if(!acao.isAcaoInterna() && !ticket.getStatus().name().equals(newStatus.name())){
@@ -122,7 +126,7 @@ public class AcaoService {
         LocalTime fimAtendimento = acao.getFimAtendimento();
 
         if(dataAtendimento == null || inicioAtendimento == null || fimAtendimento == null)
-            throw new BussinesException("Data e horários de atendimento não preenchidos. Valide se todos os campso estão preenchidos.");
+            throw new BussinesException("Data e horários de atendimento não preenchidos. Valide se todos os campos estão preenchidos.");
 
         if(dataAtendimento.isBefore(acao.getTicket().getCriadoEm().toLocalDate()))
             throw new BussinesException("A data de atendimento deve ser depois da data de abertura do ticket.");
