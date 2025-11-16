@@ -3,12 +3,13 @@ package br.deskiumcompany.deskium_ai_api.domain;
 import br.deskiumcompany.deskium_ai_api.domain.enums.TipoUsuario;
 import br.deskiumcompany.deskium_ai_api.dto.suporte.SuporteInsertDTO;
 import br.deskiumcompany.deskium_ai_api.exception.BussinesException;
-import jakarta.persistence.*;
+import jakarta.persistence.CascadeType;
+import jakarta.persistence.Entity;
+import jakarta.persistence.JoinColumn;
+import jakarta.persistence.OneToOne;
 import lombok.AllArgsConstructor;
 import lombok.Data;
 import lombok.NoArgsConstructor;
-
-import java.util.List;
 
 @Entity
 @Data
@@ -18,9 +19,6 @@ public class Suporte extends EntidadeBase{
     @OneToOne(optional = false, cascade = CascadeType.ALL)
     @JoinColumn(name = "usuario_id")
     private Usuario usuario;
-
-    @OneToMany(mappedBy = "suporte")
-    private List<Ticket> tickets;
 
     public Suporte(SuporteInsertDTO dto) throws BussinesException {
         try {

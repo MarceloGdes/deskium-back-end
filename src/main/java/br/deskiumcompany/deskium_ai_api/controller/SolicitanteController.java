@@ -61,10 +61,4 @@ public class SolicitanteController {
 
         return ResponseEntity.ok(new SolicitanteResponseDTO(solicitante));
     }
-
-//    @DeleteMapping("/{id}")
-//    public ResponseEntity<Void> delete(@PathVariable Long id) throws EntityNotFoundException {
-//        solicitanteService.delete(id);
-//        return ResponseEntity.noContent().build();
-//    }
 }

@@ -21,7 +21,6 @@ public class AcaoInsertDTO {
     private Status statusId = Status.ABERTO;
     @NotBlank
     private String html;
-
     private LocalDate dataAtendimento;
     private LocalTime inicioAtendimento;
     private LocalTime fimAtendimento;

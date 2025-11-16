@@ -25,8 +25,13 @@ public class AuthenticationController {
 
     @PostMapping("/login")
     public ResponseEntity<LoginResponseDto> login(@RequestBody @Valid AuthenticationDTO dto){
-
+        
+        //Token de Athenticação.
         var emailSenhaToken = new UsernamePasswordAuthenticationToken(dto.getEmail(), dto.getSenha());
+
+        //Utiliza o AuthService para carregar o UserDatails e o password encoder configurado no SecurityConfig
+        // para validar a senha.
+        //Bean gerenciado pelo Spring
         var auth = authenticationManager.authenticate(emailSenhaToken);
         var token = jwtService.generateToken((Usuario) auth.getPrincipal());
 

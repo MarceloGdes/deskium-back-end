@@ -41,7 +41,7 @@ public class TicketController {
     @Autowired
     private AcaoService acaoService;
 
-    //O Spring injeta  o objeto Authentication na requisição, pois no meu Security Filter, a authenticação foi setada no contexto da requisição.
+    //O Spring injeta  o objeto Authentication na requisição, pois no Security Filter, a authenticação foi setada no contexto da requisição.
     //Nessa autenticação, o usuário já foi carregado previamente.
 
     @PostMapping

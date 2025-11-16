@@ -7,8 +7,6 @@ import lombok.AllArgsConstructor;
 import lombok.Data;
 import lombok.NoArgsConstructor;
 
-import java.util.List;
-
 @Entity
 @Data
 @AllArgsConstructor
@@ -35,9 +33,6 @@ public class Solicitante extends EntidadeBase{
     @OneToOne(optional = false, cascade = CascadeType.ALL)
     @JoinColumn(name = "usuario_id")
     private Usuario usuario;
-
-    @OneToMany(mappedBy = "solicitante")
-    private List<Ticket> tickets;
 
     public Solicitante(SolicitanteInsertDTO dto) {
         this.cargo = dto.getCargo();

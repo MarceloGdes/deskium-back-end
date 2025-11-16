@@ -8,9 +8,7 @@ import lombok.AllArgsConstructor;
 import lombok.Data;
 import lombok.NoArgsConstructor;
 
-import java.time.LocalDate;
 import java.time.LocalDateTime;
-import java.time.LocalTime;
 import java.util.ArrayList;
 import java.util.List;
 
@@ -23,9 +21,6 @@ public class AcaoResponseDTO {
     private LocalDateTime criadoEm;
     private boolean acaoInterna;
     private boolean acaoTranscricao;
-    private LocalDate dataAtendimento;
-    private LocalTime inicioAtendimento;
-    private LocalTime fimAtendimento;
     private UsuarioDTO autor;
     private String html;
     private OrigemAcao origemAcao;
@@ -38,9 +33,6 @@ public class AcaoResponseDTO {
         this.criadoEm = acao.getCriadoEm();
         this.acaoInterna = acao.isAcaoInterna();
         this.acaoTranscricao = acao.isAcaoTranscricao();
-        this.dataAtendimento = acao.getDataAtendimento();
-        this.inicioAtendimento = acao.getInicioAtendimento();
-        this.fimAtendimento = acao.getFimAtendimento();
         this.autor = new UsuarioDTO(acao.getUsuarioAutor());
         this.html = acao.getHtml();
         this.origemAcao = acao.getOrigemAcao();
