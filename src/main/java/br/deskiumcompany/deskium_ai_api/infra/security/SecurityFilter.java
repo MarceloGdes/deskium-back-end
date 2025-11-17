@@ -26,7 +26,7 @@ public class SecurityFilter extends OncePerRequestFilter {
     UsuarioService usuarioService;
 
     @Autowired
-    private JwtAuthenticationEntryPoint entryPoint; // seu entrypoint
+    private JwtAuthenticationEntryPoint entryPoint;
 
     @SneakyThrows
     @Override
@@ -36,7 +36,7 @@ public class SecurityFilter extends OncePerRequestFilter {
 
             if(token != null){
                String login = jwtService.validateToken(token);
-               UserDetails user = usuarioService.findByLogin(login);
+               UserDetails user = usuarioService.loadUserByUsername(login);
 
                //Validando as informações do ROLE
                var authentication = new UsernamePasswordAuthenticationToken(user, null, user.getAuthorities());

@@ -28,13 +28,15 @@ public class SecurityConfiguration {
     public SecurityFilterChain securityFilterChain(HttpSecurity httpSecurity) throws Exception{
         return httpSecurity
                 //Desabilita proteção CSRF
-                //Proteção de request de sites "Falsos". Desabilitado, porque no momento não hhá necessidade.
+                //Proteção contra requisições de sites "falsos" ou maliciosos.
+                //A aplicação usa autenticação stateless (JWT/Token), não cookies de sessão
+                //APIs REST geralmente não precisam de proteção CSRF quando usam tokens
                 .csrf(csrf -> csrf.disable())
 
-                // define que a authentificação será Stateless ou seja, por token JWT, padrão REST.
+                // define que a autentificação será Stateless ou seja, por token JWT, padrão REST.
                 .sessionManagement(session -> session.sessionCreationPolicy(SessionCreationPolicy.STATELESS))
 
-                //definindo regra de roles onde cada usuário podeira acessar ou não
+                //definindo regra de roles, onde cada usuário podeira acessar ou não
                 .authorizeHttpRequests(authorize -> authorize
                         .requestMatchers(HttpMethod.POST, "/auth/login").permitAll()
                         .requestMatchers(HttpMethod.GET, "/arquivos/{fileName}").permitAll()
@@ -64,12 +66,14 @@ public class SecurityConfiguration {
 
     // Gerencia autenticação - responsável por validar credenciais (email e senha)
     // Usado quando o usuário faz login;
+    // Bean gerenciado pelo Spting
     @Bean
     public AuthenticationManager authenticationManager(AuthenticationConfiguration authenticationConfiguration) throws Exception {
         return authenticationConfiguration.getAuthenticationManager();
     }
 
-    // 2. PasswordEncoder - Encripta e valida senhas
+    // PasswordEncoder - Encripta e valida senhas
+    // Gerencado pelo spring
     @Bean
     public PasswordEncoder passwordEncoder(){
         return new BCryptPasswordEncoder();

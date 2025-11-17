@@ -28,7 +28,6 @@ public class EmailService {
     //Envia e-mails com anexo e em formato HTML
     @Async
     //Metodo assincrono para não demorar para devolver a resposta para o client.
-    //Não ou enviar o corpo do e-mail nesse primeiro momento, devido as imagens não serem carregadas.
     public void enviarEmailComAnexo(String destinatario,
                                     String assunto,
                                     String conteudoHtmlAcao,

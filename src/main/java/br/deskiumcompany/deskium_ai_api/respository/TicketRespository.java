@@ -59,7 +59,7 @@ public interface TicketRespository extends JpaRepository<Ticket, Long> {
         
     """)
 //    *Utilizado o cast para apontar para o JPQL qual o tipo do dado que estamos validando se
-//    é nulo, pois ele não tem esse contexto. No comparação com o Between, o tipo do dado é
+//    é nulo, pois ele não tem esse contexto. Na comparação com o Between, o tipo do dado é
 //    entendido como igual da coluna.
 
     List<Ticket> findAll(

@@ -3,7 +3,6 @@ package br.deskiumcompany.deskium_ai_api.infra.security;
 import br.deskiumcompany.deskium_ai_api.domain.Usuario;
 import com.auth0.jwt.JWT;
 import com.auth0.jwt.algorithms.Algorithm;
-import com.auth0.jwt.exceptions.JWTCreationException;
 import com.auth0.jwt.exceptions.JWTVerificationException;
 import org.springframework.stereotype.Service;
 
@@ -19,18 +18,14 @@ public class JwtService {
 
     //gera a chave de assinatura do JWT.
     public String generateToken(Usuario usuario){
-        try{
-            Algorithm algorithm = Algorithm.HMAC256(secret);
-            String token = JWT.create()
-                    .withIssuer("deskium-api")
-                    .withSubject(usuario.getEmail())
-                    .withExpiresAt(genExpirationDate())
-                    .sign(algorithm);
+        Algorithm algorithm = Algorithm.HMAC256(secret);
+        String token = JWT.create()
+                .withIssuer("deskium-api")
+                .withSubject(usuario.getEmail())
+                .withExpiresAt(genExpirationDate())
+                .sign(algorithm);
 
-            return token;
-        }catch (JWTCreationException e){
-            throw new RuntimeException("Erro ao gerar token", e);
-        }
+        return token;
     }
 
     public String validateToken(String token) throws JWTVerificationException {
