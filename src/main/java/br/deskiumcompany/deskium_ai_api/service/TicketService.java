@@ -43,6 +43,9 @@ public class TicketService {
     @Autowired
     private ArquivosService arquivosService;
 
+    @Autowired
+    private CalculadoraPrazoTicketService calculadoraPrazoTicketService;
+
     public Ticket insert(Ticket ticket) throws BussinesException{
         var solicitante = ticket.getSolicitante();
         solicitante = solicitanteService.getByUsuarioId(solicitante.getUsuario().getId());
@@ -75,12 +78,7 @@ public class TicketService {
             }
         }
 
-        //Todo: criar metodo de calculo.
-//        var horasParaPrimeiraResposta = ticket.getMotivo().getPrazoPrimeiraResposta();
-//        var horasParaResolucao = ticket.getMotivo().getPrazoResolucao();
-//
-//        var dataPrimeiraResposta = ticket.getCriadoEm().plusHours(horasParaPrimeiraResposta);
-
+        calculadoraPrazoTicketService.calcularPrazos(ticket);
 
         return respository.save(ticket);
     }
@@ -166,6 +164,8 @@ public class TicketService {
         ticket.setPrioridade(prioridade);
 
         ticket.setSubStatus(dto.getSubStatusId());
+
+        calculadoraPrazoTicketService.calcularPrazos(ticket);
 
         respository.save(ticket);
     }
