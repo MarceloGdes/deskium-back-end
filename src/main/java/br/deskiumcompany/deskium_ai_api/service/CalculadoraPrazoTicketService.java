@@ -60,7 +60,7 @@ public class CalculadoraPrazoTicketService {
 
             // Pula dias sem expediente
             if (expediente == null || !expediente.isExpediente()) {
-                atual = buscarProximoDiaUtil(atual.plusDays(1));
+                atual = buscarProximaDataUtil(atual.plusDays(1));
                 continue;
             }
 
@@ -100,13 +100,13 @@ public class CalculadoraPrazoTicketService {
 
         //se a hora é após o fim da tarde
         if (hora.isAfter(exp.getFimTarde())) {
-            return buscarProximoDiaUtil(data.plusDays(1));
+            return buscarProximaDataUtil(data.plusDays(1));
         }
 
         return data;
     }
 
-    private LocalDateTime buscarProximoDiaUtil(LocalDateTime data) {
+    private LocalDateTime buscarProximaDataUtil(LocalDateTime data) {
         LocalDateTime proximoDia = data;
 
         while (true) {
@@ -119,6 +119,15 @@ public class CalculadoraPrazoTicketService {
 
             proximoDia = proximoDia.plusDays(1);
         }
+    }
+
+    //Adiciona dias uteis, apra calculo de prazos.
+    public LocalDateTime somaDiasUteisTrabalho(LocalDateTime data, int dias){
+        for (int i = dias; i > 0; i--) {
+            data = buscarProximaDataUtil(data.plusDays(1));
+        }
+
+        return data;
     }
 
     private Expediente buscarExpediente(DayOfWeek day) {

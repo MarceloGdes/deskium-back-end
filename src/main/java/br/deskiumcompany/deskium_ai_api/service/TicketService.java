@@ -66,6 +66,10 @@ public class TicketService {
         var acao = ticket.getAcoes().getFirst();
         acao.setTextoPuro(acaoService.extractTextFromHTML(acao.getHtml()));
         acao.setHtml(acaoService.formatHtml(acao.getHtml()));
+
+        if(acao.getTextoPuro().length() > 10000)
+            throw new BussinesException("A descrição ultrapassa a quantidade de 10.000 caracteres.");
+
         acao.setTicket(ticket);
 
         if(acao.getAnexos() != null && !acao.getAnexos().isEmpty()){
@@ -142,7 +146,6 @@ public class TicketService {
             }
         }
     }
-
     public void update(Ticket ticket, TicketUpdateDTO dto, Usuario usuario) throws BussinesException {
         if(!ticket.getStatus().equals(Status.ABERTO))
             throw new BussinesException("O ticket " + ticket.getId() + " não está aberto.");

@@ -116,7 +116,20 @@ public class TicketController {
     ) throws BussinesException, MessagingException, FileNotFoundException {
         var usuario = (Usuario) auth.getPrincipal();
         var ticket = service.getById(ticketId, usuario);
-        acaoService.addAcao(new Acao(ticket, usuario, dto, OrigemAcao.SISTEMA), dto.getStatusId());
+        acaoService.addAcao(new Acao(ticket, usuario, dto, OrigemAcao.SISTEMA), dto.getStatusId(), false);
+
+        return ResponseEntity.status(HttpStatusCodes.STATUS_CODE_CREATED).build();
+    }
+
+    @PutMapping("/reopen/{id}")
+    public ResponseEntity reOpen(
+            @PathVariable("id") long ticketId,
+            Authentication auth,
+            @RequestBody @Valid AcaoInsertDTO dto
+    ) throws BussinesException, MessagingException, FileNotFoundException {
+        var usuario = (Usuario) auth.getPrincipal();
+        var ticket = service.getById(ticketId, usuario);
+        acaoService.addAcao(new Acao(ticket, usuario, dto, OrigemAcao.SISTEMA), Status.ABERTO, true);
 
         return ResponseEntity.status(HttpStatusCodes.STATUS_CODE_CREATED).build();
     }

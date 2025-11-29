@@ -2,6 +2,8 @@ package br.deskiumcompany.deskium_ai_api.service;
 
 import br.deskiumcompany.deskium_ai_api.domain.Acao;
 import br.deskiumcompany.deskium_ai_api.domain.Anexo;
+import br.deskiumcompany.deskium_ai_api.domain.Ticket;
+import br.deskiumcompany.deskium_ai_api.domain.Usuario;
 import br.deskiumcompany.deskium_ai_api.domain.enums.Status;
 import br.deskiumcompany.deskium_ai_api.domain.enums.SubStatus;
 import br.deskiumcompany.deskium_ai_api.domain.enums.TipoUsuario;
@@ -32,19 +34,25 @@ public class AcaoService {
     @Autowired
     private EmailService emailService;
 
+    @Autowired
+    private CalculadoraPrazoTicketService calculadoraPrazoTicketService;
+
     //TODO: utilizar o clean do Jsoup aumentando a segurança contra ataques XSS (tags html que executam scripts)
 
-    public void addAcao(Acao acao, Status newStatus) throws BussinesException, MessagingException, FileNotFoundException {
+    public void addAcao(Acao acao, Status newStatus, boolean isReopenning) throws BussinesException, MessagingException, FileNotFoundException {
         var ticket = acao.getTicket();
         var usuarioSolicitante = ticket.getSolicitante().getUsuario();
         var usuarioSuporte = ticket.getSuporte().getUsuario();
 
-        if(!ticket.getStatus().equals(Status.ABERTO))
-            throw new BussinesException("O ticket " + ticket.getId() + " não está aberto.");
-
         if(acao.getUsuarioAutor().getId() != usuarioSolicitante.getId() &&
                 acao.getUsuarioAutor().getId() != usuarioSuporte.getId())
             throw new BussinesException("Usuário sem acesso a adições de ações nesse ticket");
+
+        if (isReopenning) {
+            reopenTicket(acao, ticket, usuarioSolicitante);
+
+        } else if (!ticket.getStatus().equals(Status.ABERTO))
+            throw new BussinesException("O ticket " + ticket.getId() + " não está aberto.");
 
         acao.setNumAcao(repository.findLastNumAcao(ticket) + 1);
         acao.setTextoPuro(extractTextFromHTML(acao.getHtml()));
@@ -66,7 +74,6 @@ public class AcaoService {
         //Atualizando o substatus do ticket.
         if(acao.getUsuarioAutor().getTipoUsuario().equals(TipoUsuario.SOLICITANTE)
                 && ticket.getSubStatus().equals(SubStatus.AGUARDANDO_RETORNO)){
-
             ticket.setSubStatus(SubStatus.EM_ATENDIMENTO);
         }
 
@@ -88,24 +95,7 @@ public class AcaoService {
 
             //Atualizando status do ticket.
             if(!ticket.getStatus().name().equals(newStatus.name())){
-                //Valida se a ação é interna.
-                if(acao.isAcaoInterna())
-                    throw new BussinesException("O ticket não pode ser fechado com uma ação interna.");
-
-                //Validação de categoria e prioridade preenchidos.
-                if(ticket.getCategoria() == null)
-                    throw new BussinesException("Para fechar o ticket, é necessário o preenchimento da categoria.");
-
-                if(ticket.getCategoria() == null)
-                    throw new BussinesException("Para fechar o ticket, é necessário o preenchimento da categoria.");
-
-                if(ticket.getPrioridade() == null)
-                    throw new BussinesException("Para fechar o ticket, é necessário o preenchimento da prioridade.");
-
-                ticket.setStatus(newStatus);
-                ticket.setSubStatus(SubStatus.FECHADO);
-                ticket.setDataResolucao(LocalDateTime.now());
-
+                closeTicket(acao, newStatus, ticket);
             }
         }
 
@@ -122,6 +112,45 @@ public class AcaoService {
         }
     }
 
+    public Acao getById(Long acaoId, Long ticketId) {
+        return repository.findByIdAndTicketId(acaoId, ticketId)
+                .orElseThrow(() -> new EntityNotFoundException("Acão não encontrada."));
+    }
+    private static void closeTicket(Acao acao, Status newStatus, Ticket ticket) throws BussinesException {
+        //Valida se a ação é interna.
+        if(acao.isAcaoInterna())
+            throw new BussinesException("O ticket não pode ser fechado com uma ação interna.");
+
+        //Validação de categoria e prioridade preenchidos.
+        if(ticket.getCategoria() == null)
+            throw new BussinesException("Para fechar o ticket, é necessário o preenchimento da categoria.");
+
+        if(ticket.getCategoria() == null)
+            throw new BussinesException("Para fechar o ticket, é necessário o preenchimento da categoria.");
+
+        if(ticket.getPrioridade() == null)
+            throw new BussinesException("Para fechar o ticket, é necessário o preenchimento da prioridade.");
+
+        ticket.setStatus(newStatus);
+        ticket.setSubStatus(SubStatus.FECHADO);
+        ticket.setDataResolucao(LocalDateTime.now());
+    }
+    private void reopenTicket(Acao acao, Ticket ticket, Usuario usuarioSolicitante) throws BussinesException {
+        if (ticket.getStatus().equals(Status.CANCELADO))
+            throw new BussinesException("Tickets Cancelados não podem ser reabertos.");
+
+        // Apenas o solicitante pode reabrir
+        if (!acao.getUsuarioAutor().getId().equals(usuarioSolicitante.getId()))
+            throw new BussinesException("Apenas o solicitante pode reabrir o ticket.");
+
+        // Calcula o prazo de reabertura, conforme a jornada de trabalho configurada.
+        LocalDateTime prazoDeReabertura = calculadoraPrazoTicketService.somaDiasUteisTrabalho(ticket.getDataResolucao(), 2);
+        if (LocalDateTime.now().isAfter(prazoDeReabertura))
+            throw new BussinesException("Este ticket não pode mais ser reaberto, pois passou do prazo de 2 dias úteis");
+
+        ticket.setDataResolucao(null);
+        ticket.setStatus(Status.ABERTO);
+    }
     private Duration calcularHoras(Acao acao) throws BussinesException {
         LocalDate dataAtendimento = acao.getDataAtendimento();
         LocalTime inicioAtendimento = acao.getInicioAtendimento();
@@ -138,12 +167,10 @@ public class AcaoService {
 
         return Duration.between(inicioAtendimento, fimAtendimento);
     }
-
     protected String extractTextFromHTML(String html){
         var text = Jsoup.parse(html).text();
         return text;
     }
-
     protected String formatHtml(String html) {
         // Com Jsoup, percorremos o HTML em busca de tags img para adicionar a classe img-fluid do boostrap
         Document doc = Jsoup.parse(html);
@@ -155,8 +182,5 @@ public class AcaoService {
         return doc.body().html();
     }
 
-    public Acao getById(Long acaoId, Long ticketId) {
-        return repository.findByIdAndTicketId(acaoId, ticketId)
-                .orElseThrow(() -> new EntityNotFoundException("Acão não encontrada."));
-    }
+
 }
