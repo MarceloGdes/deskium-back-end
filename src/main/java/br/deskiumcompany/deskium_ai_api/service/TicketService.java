@@ -82,7 +82,7 @@ public class TicketService {
             }
         }
 
-        calculadoraPrazoTicketService.calcularPrazos(ticket);
+        calculadoraPrazoTicketService.calcularPrazosPrimeiraRespostaEResolucao(ticket);
 
         return respository.save(ticket);
     }
@@ -168,7 +168,7 @@ public class TicketService {
 
         ticket.setSubStatus(dto.getSubStatusId());
 
-        calculadoraPrazoTicketService.calcularPrazos(ticket);
+        calculadoraPrazoTicketService.calcularPrazosPrimeiraRespostaEResolucao(ticket);
 
         respository.save(ticket);
     }

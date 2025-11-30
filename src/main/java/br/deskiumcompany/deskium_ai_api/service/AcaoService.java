@@ -116,7 +116,7 @@ public class AcaoService {
         return repository.findByIdAndTicketId(acaoId, ticketId)
                 .orElseThrow(() -> new EntityNotFoundException("Acão não encontrada."));
     }
-    private static void closeTicket(Acao acao, Status newStatus, Ticket ticket) throws BussinesException {
+    private void closeTicket(Acao acao, Status newStatus, Ticket ticket) throws BussinesException {
         //Valida se a ação é interna.
         if(acao.isAcaoInterna())
             throw new BussinesException("O ticket não pode ser fechado com uma ação interna.");
@@ -134,6 +134,7 @@ public class AcaoService {
         ticket.setStatus(newStatus);
         ticket.setSubStatus(SubStatus.FECHADO);
         ticket.setDataResolucao(LocalDateTime.now());
+        ticket.setPrazoReabertura(calculadoraPrazoTicketService.calcularPrazoReabertura(ticket.getDataResolucao(), 2));
     }
     private void reopenTicket(Acao acao, Ticket ticket, Usuario usuarioSolicitante) throws BussinesException {
         if (ticket.getStatus().equals(Status.CANCELADO))
@@ -143,13 +144,13 @@ public class AcaoService {
         if (!acao.getUsuarioAutor().getId().equals(usuarioSolicitante.getId()))
             throw new BussinesException("Apenas o solicitante pode reabrir o ticket.");
 
-        // Calcula o prazo de reabertura, conforme a jornada de trabalho configurada.
-        LocalDateTime prazoDeReabertura = calculadoraPrazoTicketService.somaDiasUteisTrabalho(ticket.getDataResolucao(), 2);
-        if (LocalDateTime.now().isAfter(prazoDeReabertura))
+        if (ticket.getPrazoReabertura() == null || LocalDateTime.now().isAfter(ticket.getPrazoReabertura()))
             throw new BussinesException("Este ticket não pode mais ser reaberto, pois passou do prazo de 2 dias úteis");
 
         ticket.setDataResolucao(null);
+        ticket.setPrazoReabertura(null);
         ticket.setStatus(Status.ABERTO);
+        ticket.setSubStatus(SubStatus.EM_ATENDIMENTO);
     }
     private Duration calcularHoras(Acao acao) throws BussinesException {
         LocalDate dataAtendimento = acao.getDataAtendimento();

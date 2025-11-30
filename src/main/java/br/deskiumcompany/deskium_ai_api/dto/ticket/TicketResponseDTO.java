@@ -27,6 +27,7 @@ public class TicketResponseDTO {
     private LocalDateTime dataResolucao;
     private LocalDateTime previsaoPrimeiraResposta;
     private LocalDateTime dataPrimeiraResposta;
+    private LocalDateTime prazoReabertura;
     private Duration horasApontadas;
     private StatusDTO status;
     private SolicitanteResponseDTO solicitante;
@@ -49,6 +50,7 @@ public class TicketResponseDTO {
         this.motivo = ticket.getMotivo();
         this.categoria = ticket.getCategoria();
         this.subStatus = new SubStatusDTO(ticket.getSubStatus());
+        this.prazoReabertura = ticket.getPrazoReabertura();
 
         //Retorna essas informações apenas se o usuário não for SOLICITANTE
         if(!usuario.getTipoUsuario().name().equals(TipoUsuario.SOLICITANTE.name())){

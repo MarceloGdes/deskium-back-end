@@ -17,7 +17,7 @@ public interface SolicitanteRepository extends JpaRepository<Solicitante, Long> 
            SELECT s FROM Solicitante s WHERE
            (:id IS NULL OR s.id = :id) AND
            (:nome IS NULL OR UPPER(s.usuario.nomeCompleto) LIKE CONCAT('%', UPPER(:nome), '%')) AND
-           (:nomeEmpresa IS NULL OR UPPER(s.empresa.razaoSocial) LIKE CONCAT('%', UPPER(:nomeEmpresa), '%')))
+           (:nomeEmpresa IS NULL OR UPPER(s.empresa.razaoSocial) LIKE CONCAT('%', UPPER(:nomeEmpresa), '%'))
            """)
     List<Solicitante> findByFiltros(
             @Param("id") Long id,

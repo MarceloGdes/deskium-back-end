@@ -16,7 +16,7 @@ public class CalculadoraPrazoTicketService {
     @Autowired
     private ExpedienteRepository expedienteRepository;
 
-    public void calcularPrazos(Ticket ticket) {
+    public void calcularPrazosPrimeiraRespostaEResolucao(Ticket ticket) {
         int horasPrimeiraResposta = calcularHoras(ticket, true);
         int horasResolucao = calcularHoras(ticket, false);
 
@@ -24,6 +24,16 @@ public class CalculadoraPrazoTicketService {
 
         ticket.setPrevisaoPrimeiraResposta(adicionarHorasUteis(dtCriacaoTicket, horasPrimeiraResposta));
         ticket.setPrevisaoResolucao(adicionarHorasUteis(dtCriacaoTicket, horasResolucao));
+    }
+
+    //Adiciona dias uteis, apra calculo de prazos.
+    public LocalDateTime calcularPrazoReabertura(LocalDateTime data, int dias){
+        for (int i = dias; i > 0; i--) {
+            data = buscarProximaDataUtil(data);
+            data = data.plusDays(1);
+        }
+
+        return data;
     }
 
     private int calcularHoras(Ticket ticket, boolean primeiraResposta) {
@@ -121,14 +131,7 @@ public class CalculadoraPrazoTicketService {
         }
     }
 
-    //Adiciona dias uteis, apra calculo de prazos.
-    public LocalDateTime somaDiasUteisTrabalho(LocalDateTime data, int dias){
-        for (int i = dias; i > 0; i--) {
-            data = buscarProximaDataUtil(data.plusDays(1));
-        }
 
-        return data;
-    }
 
     private Expediente buscarExpediente(DayOfWeek day) {
         return expedienteRepository.findById(DiaSemana.valueOf(day.name()))

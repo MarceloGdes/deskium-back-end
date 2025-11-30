@@ -63,6 +63,8 @@ public class Ticket extends EntidadeBase{
     @OrderBy("numAcao DESC") //Ordena a lista de ações de forma decrescente
     private List<Acao> acoes;
 
+    private LocalDateTime prazoReabertura;
+
     public Ticket(TicketInsertDTO dto, Usuario usuario, OrigemAcao origemAcao) {
         this.titulo = dto.getTitulo();
         this.status = Status.ABERTO;
