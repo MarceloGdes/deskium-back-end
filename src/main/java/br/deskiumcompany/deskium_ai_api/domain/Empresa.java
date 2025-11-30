@@ -1,9 +1,9 @@
 package br.deskiumcompany.deskium_ai_api.domain;
 
 import br.deskiumcompany.deskium_ai_api.dto.empresa.EmpresaDTO;
-import jakarta.persistence.*;
+import jakarta.persistence.Column;
+import jakarta.persistence.Entity;
 import lombok.AllArgsConstructor;
-import lombok.Builder;
 import lombok.Data;
 import lombok.NoArgsConstructor;
 
@@ -26,11 +26,15 @@ public class Empresa extends EntidadeBase {
 
     private String observacoes;
 
+    @Column(nullable = false)
+    private boolean ativo = true;
+
     public Empresa(EmpresaDTO dto) {
         this.razaoSocial = dto.getRazaoSocial();
         this.cnpj = dto.getCnpj();
         this.email = dto.getEmail();
         this.telefone = dto.getTelefone();
         this.observacoes = dto.getObservacoes();
+        this.ativo = dto.isAtivo();
     }
 }

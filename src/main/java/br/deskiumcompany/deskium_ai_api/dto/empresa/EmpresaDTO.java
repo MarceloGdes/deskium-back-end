@@ -32,4 +32,6 @@ public class EmpresaDTO {
 
     @Size(max = 255)
     private String observacoes;
+
+    private boolean ativo;
 }

@@ -6,7 +6,7 @@ import br.deskiumcompany.deskium_ai_api.exception.BussinesException;
 import br.deskiumcompany.deskium_ai_api.respository.SuporteRepository;
 import jakarta.persistence.EntityNotFoundException;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
+import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
 
 @Service
@@ -18,7 +18,8 @@ public class SuporteService {
     @Autowired
     private UsuarioService usuarioService;
 
-    private BCryptPasswordEncoder passwordEncoder = new BCryptPasswordEncoder();
+    @Autowired
+    private PasswordEncoder passwordEncoder;
 
     public Suporte insert(Suporte suporte) throws EntityNotFoundException, BussinesException {
         if(usuarioService.findByEmail(suporte.getUsuario().getEmail()) != null)

@@ -11,6 +11,8 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
 
+import java.util.List;
+
 @Service
 public class SolicitanteService {
 
@@ -24,7 +26,7 @@ public class SolicitanteService {
     private UsuarioService usuarioService;
 
     @Autowired
-    PasswordEncoder passwordEncoder;
+    private PasswordEncoder passwordEncoder;
 
     public Solicitante insert(Solicitante solicitante) throws BussinesException {
 
@@ -45,6 +47,15 @@ public class SolicitanteService {
     public Solicitante getById(Long id) throws EntityNotFoundException {
         return repository.findById(id)
                 .orElseThrow(() -> new EntityNotFoundException("Solicitante não encontrado"));
+    }
+
+    public List<Solicitante> findAll(long id, String nome, String nomeEmpresa){
+        return repository.findByFiltros(id, nome, nomeEmpresa);
+    }
+
+    public Solicitante getByUsuarioId(Long id){
+        return repository.findByUsuarioId(id)
+                .orElseThrow(() -> new EntityNotFoundException("Solicitante não encontrato. Contate o suporte."));
     }
 
     public Solicitante update(Long id, Solicitante solicitanteAtualizado) throws BussinesException {
@@ -77,8 +88,5 @@ public class SolicitanteService {
         return repository.save(solicitante);
     }
 
-    public Solicitante getByUsuarioId(Long id){
-        return repository.findByUsuarioId(id)
-                .orElseThrow(() -> new EntityNotFoundException("Solicitante não encontrato. Contate o suporte."));
-    }
+
 }
